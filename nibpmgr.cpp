@@ -34,33 +34,38 @@ void NibpMgr::createControl(Fl_Window* ww){
 	ww->add(m_displayTxt);
 
 	{
-		Fl_Group* o = new Fl_Group(20, 310, 70, 100);
+		Fl_Group* o = new Fl_Group(20, 310, 140, 100);
 		o->box(FL_THIN_UP_FRAME);
 		{
-			Fl_Round_Button* o = new Fl_Round_Button(20, 310, 70, 30,"NIBP_AUDAL");
+			Fl_Round_Button* o = new Fl_Round_Button(20, 310, 140, 30,"NIBP_ADULT");
 			o->tooltip("Radio button, only one button is set at a time, in the corresponding group.");
 			o->type(102);
 			o->down_box(FL_ROUND_DOWN_BOX);
-			o->callback((Fl_Callback*) button_cb);
+			o->callback((Fl_Callback*) selectType,this);
+			m_patientType = NIBP_ADULT;
 		} // Fl_Round_Button* o
 		{
-			Fl_Round_Button* o = new Fl_Round_Button(20, 340, 70, 30,"NIBP_ERTONG");
+			Fl_Round_Button* o = new Fl_Round_Button(20, 340, 140, 30,"NIBP_ENFANT");
 			o->tooltip("Radio button, only one button is set at a time, in the corresponding group.");
 			o->type(102);
 			o->down_box(FL_ROUND_DOWN_BOX);
-			o->callback((Fl_Callback*) button_cb);
+			o->callback((Fl_Callback*) selectType,this);
 		} // Fl_Round_Button* o
 		{
-			Fl_Round_Button* o = new Fl_Round_Button(20, 370, 70, 30,"NIBP_YINGER");
+			Fl_Round_Button* o = new Fl_Round_Button(20, 370, 140, 30,"NIBP_BABY");
 			o->tooltip("Radio button, only one button is set at a time, in the corresponding group.");
 			o->type(102);
 			o->down_box(FL_ROUND_DOWN_BOX);
-			o->callback((Fl_Callback*) button_cb);
+			o->callback((Fl_Callback*) selectType,this);
 		} // Fl_Round_Button* o
 
 		o->end();
 		ww->add(o);
 	}
+
+	m_startNibp = new Fl_Button(240, 310, 80, 30, "start nibp");
+	m_startNibp->callback((Fl_Callback*)startNibp);
+	ww->add(m_startNibp);
 }
 void NibpMgr::connect(Fl_Widget *, void *p){
 	NibpMgr* pThis = (NibpMgr*)p;
@@ -79,15 +84,44 @@ void NibpMgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_connectBox->label("not connect");
 	pThis->m_connectBtn->show();
 	pThis->m_disConnectBtn->hide();
-
 }
 
-void NibpMgr::button_cb(Fl_Button *b, void *) {
+void NibpMgr::selectType(Fl_Button *b, void *p) {
+	NibpMgr* pThis = (NibpMgr*)p;
   char msg[256];
   sprintf(msg, "Label: '%s'\nValue: %d", b->label(),b->value());
   //cb_info->value(msg);
   //cb_info->redraw();
   printf("%s\n",msg);
+
+  if(strcmp(b->label(),"NIBP_ADULT")){
+	  pThis->m_patientType = NIBP_ADULT;
+  }else if(strcmp(b->label(),"NIBP_ENFANT")){
+	  pThis->m_patientType = NIBP_ENFANT;
+  }if(strcmp(b->label(),"NIBP_BABY")){
+	  pThis->m_patientType = NIBP_BABY;
+  }else{
+	  pThis->m_patientType = NIBP_NONE;
+  }
+}
+void NibpMgr::startNibp(Fl_Button* b,void* p){
+	NibpMgr* pThis = (NibpMgr*)p;
+	pThis->sendPatientTypeCmd();
+	printf("start nibp\n");
+}
+void NibpMgr::sendPatientTypeCmd(){
+	switch(m_patientType){
+	case NIBP_ADULT:
+		break;
+	case NIBP_ENFANT:
+		break;
+	case NIBP_BABY:
+		break;
+	default:
+		break;
+	}
+
+
 }
 void NibpMgr::sendIdMsg(){
 	BYTE tmp[4];

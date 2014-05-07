@@ -32,7 +32,7 @@ void exitSys(Fl_Widget *, void *) {
 }
 int main(){
 	NibpMgr nibpMgr;
-	Fl_Window *window = new Fl_Window(400,200,500,450);
+	Fl_Window *window = new Fl_Window(240,100,500,450,"client");
 	//window->position(300,200);
 
 	nibpMgr.createControl(window);

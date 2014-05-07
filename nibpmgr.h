@@ -19,6 +19,12 @@
 #include <stdio.h>
 #include "network.h"
 #include "define.h"
+enum PatientType{
+	NIBP_ADULT,					//成人
+	NIBP_ENFANT,					//儿童
+	NIBP_BABY,						//婴儿
+	NIBP_NONE,
+};
 class NibpMgr {
 public:
 	NibpMgr();
@@ -28,16 +34,23 @@ public:
 
 	static void connect(Fl_Widget *, void *);
 	static void disConnect(Fl_Widget *, void *);
-	static void button_cb(Fl_Button *b, void *);
+	static void selectType(Fl_Button *b, void *);
+	static void startNibp(Fl_Button* b,void* p);
 	void sendIdMsg();
+	PatientType getPatientType(){
+		return m_patientType;
+	}
+	void sendPatientTypeCmd();
 private:
 
 	Fl_Button* m_connectBtn;
 	Fl_Button* m_disConnectBtn;
 	Fl_Box* m_connectBox;
 	Fl_Multiline_Output* m_displayTxt;
-
+	Fl_Button* m_startNibp;
 	Network m_network;
+
+	PatientType m_patientType;
 };
 
 #endif /* NIBPMGR_H_ */
