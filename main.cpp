@@ -22,6 +22,8 @@ void send_msg(int ,int ,int){
 
 
 
+
+
 void connect(Fl_Widget *, void *) {
   printf("\007"); fflush(stdout);
 }
@@ -30,21 +32,10 @@ void exitSys(Fl_Widget *, void *) {
 }
 int main(){
 	NibpMgr nibpMgr;
-	Fl_Window *window = new Fl_Window(500,580);
-	window->position(600,300);
+	Fl_Window *window = new Fl_Window(400,200,500,450);
+	//window->position(300,200);
 
 	nibpMgr.createControl(window);
-//	Fl_Button *b1 = new Fl_Button(20, 20, 80, 25, "connect");
-//	b1->callback(connect,0);
-//	//Fl_Label* l1 = new
-////    Fl_Button *b2 = new Fl_Button(320,20, 80, 25, "exit");
-////    b2->callback(exitSys,0);
-//
-//    Fl_Multiline_Output* output = new Fl_Multiline_Output(20,100,460,400,"");
-//
-//    output->insert("hhhh");
-//    output->insert("hhhh");
-
 
 	window->end();
 	window->show();

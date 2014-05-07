@@ -52,5 +52,7 @@ bool Network::disConnect(){
     m_sockFd = -1;
     return true;
 }
-
+int Network::send(const BYTE* data,int len){
+	return 0;
+}
 

@@ -14,9 +14,11 @@
 #include <FL/Fl_Multiline_Output.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Round_Button.H>
 #include <stdlib.h>
 #include <stdio.h>
 #include "network.h"
+#include "define.h"
 class NibpMgr {
 public:
 	NibpMgr();
@@ -26,6 +28,8 @@ public:
 
 	static void connect(Fl_Widget *, void *);
 	static void disConnect(Fl_Widget *, void *);
+	static void button_cb(Fl_Button *b, void *);
+	void sendIdMsg();
 private:
 
 	Fl_Button* m_connectBtn;

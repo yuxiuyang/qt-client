@@ -9,6 +9,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include "define.h"
 class Network : public NetDev
 {
 public:
@@ -18,6 +19,7 @@ public:
     bool init();
     int connect();
     bool disConnect();
+    int send(const BYTE* data,int len);
 private:
     struct sockaddr_in m_serverAddress;
     unsigned short m_serverPort;
