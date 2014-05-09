@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include "network.h"
 #include "define.h"
+#include "analysenibp.h"
 enum PatientType{
 	NIBP_ADULT,					//成人
 	NIBP_ENFANT,					//儿童
@@ -41,6 +42,9 @@ public:
 		return m_patientType;
 	}
 	void sendPatientTypeCmd();
+	static void Data_Arrived_nibp(int fdt,void *pv);
+	void appendData(const BYTE* buf,int len);
+	void appendData(const char * buf);
 private:
 
 	Fl_Button* m_connectBtn;
@@ -51,6 +55,8 @@ private:
 	Network m_network;
 
 	PatientType m_patientType;
+
+	AnalyseNibp* m_analNibp;
 };
 
 #endif /* NIBPMGR_H_ */

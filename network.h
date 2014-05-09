@@ -19,7 +19,7 @@ public:
     bool init();
     int connect();
     bool disConnect();
-    int send(const BYTE* data,int len);
+    int sendData(const BYTE* data,int len);
 private:
     struct sockaddr_in m_serverAddress;
     unsigned short m_serverPort;

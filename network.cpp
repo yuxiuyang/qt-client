@@ -52,7 +52,27 @@ bool Network::disConnect(){
     m_sockFd = -1;
     return true;
 }
-int Network::send(const BYTE* data,int len){
-	return 0;
+int Network::sendData(const BYTE* data, int len) {
+	int total = 0;
+	while (1) {
+		int size = send(m_sockFd, data + total, len, 0);
+		if (size <= 0) {
+			printf("maybe a error  send failure,and close fd=%d\n",m_sockFd);
+			close(m_sockFd);
+		}
+		total += size;
+		if (size < len) {
+			len -= size;
+			continue;
+		} else {
+			break;
+		}
+	}
+	printf("send data len=%d,total=%d\n",len,total);
+	for(int i=0;i<total;i++){
+		printf("%02x ",data[i]);
+	}
+	printf("\nsend data success \n");
+	return total;
 }
 
