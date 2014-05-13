@@ -26,6 +26,10 @@ enum PatientType{
 	NIBP_BABY,						//婴儿
 	NIBP_NONE,
 };
+enum NIBP_STATE{
+	START_NIBP=0x87,
+	STOP_NIBP,
+};
 class NibpMgr {
 public:
 	NibpMgr();
@@ -37,6 +41,7 @@ public:
 	static void disConnect(Fl_Widget *, void *);
 	static void selectType(Fl_Button *b, void *);
 	static void startNibp(Fl_Button* b,void* p);
+	static void clearTxt(Fl_Button* b,void* p);
 	void sendIdMsg();
 	PatientType getPatientType(){
 		return m_patientType;
@@ -52,6 +57,7 @@ private:
 	Fl_Box* m_connectBox;
 	Fl_Multiline_Output* m_displayTxt;
 	Fl_Button* m_startNibp;
+	Fl_Button* m_clearTxt;
 	Network m_network;
 
 	PatientType m_patientType;

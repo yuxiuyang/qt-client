@@ -103,5 +103,5 @@ void AnalyseNibp::anal_DataPag(const BYTE* buf,int len){
 //		printf("%02x ",buf[i]);
 //	}
 	//printf("end.....\n");
-	((NibpMgr*)m_mgr)->appendData(buf,len);
+	((NibpMgr*)m_mgr)->appendData(buf+3,len-5);
 }

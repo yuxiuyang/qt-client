@@ -6,7 +6,9 @@
  */
 
 #include "nibpmgr.h"
-
+#include "mgrdev.h"
+#define LINE_LEN 60
+static int g_linePos=0;
 NibpMgr::NibpMgr() {
 	// TODO Auto-generated constructor stub
 	m_analNibp = new AnalyseNibp(this);
@@ -28,13 +30,14 @@ void NibpMgr::createControl(Fl_Window* ww){
 	m_connectBox = new Fl_Box(120,20,100,30,"not connect");
 	ww->add(m_connectBox);
 
-	m_disConnectBtn = new Fl_Button(230, 20, 82, 30, " disconnect");
+	m_disConnectBtn = new Fl_Button(250, 20, 82, 30, " disconnect");
 	m_disConnectBtn->callback(disConnect,this);
 	m_disConnectBtn->hide();
 	ww->add(m_disConnectBtn);
 
 
 	m_displayTxt = new Fl_Multiline_Output(20, 100, 470, 200, "");
+	m_displayTxt->tooltip("This is an Fl_Multiline_Output widget.");
 	ww->add(m_displayTxt);
 
 	{
@@ -69,8 +72,12 @@ void NibpMgr::createControl(Fl_Window* ww){
 	}
 
 	m_startNibp = new Fl_Button(240, 310, 80, 30, " start nibp");
-	m_startNibp->callback((Fl_Callback*)startNibp);
+	m_startNibp->callback((Fl_Callback*)startNibp,this);
 	ww->add(m_startNibp);
+
+	m_clearTxt = new Fl_Button(350, 310, 80, 30, " clear");
+	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
+	ww->add(m_clearTxt);
 }
 void NibpMgr::connect(Fl_Widget *, void *p){
 	NibpMgr* pThis = (NibpMgr*)p;
@@ -80,6 +87,8 @@ void NibpMgr::connect(Fl_Widget *, void *p){
 	}
 	Fl::add_fd(pThis->m_network.getSockFd(),Data_Arrived_nibp,pThis);
 	pThis->sendIdMsg();
+	sleep(1);
+	pThis->sendPatientTypeCmd();
 	pThis->m_connectBox->label("connect success");
 	pThis->m_connectBtn->hide();
 	pThis->m_disConnectBtn->show();
@@ -111,19 +120,39 @@ void NibpMgr::selectType(Fl_Button *b, void *p) {
   }else{
 	  pThis->m_patientType = NIBP_NONE;
   }
+  pThis->sendPatientTypeCmd();
 }
 void NibpMgr::startNibp(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;
-	pThis->sendPatientTypeCmd();
-	printf("start nibp\n");
+	static int i = 0;
+	if(!i){
+		pThis->sendPatientTypeCmd();
+		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,START_NIBP);
+		i ++;
+		printf("start nibp\n");
+	}else{
+		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,STOP_NIBP);
+		i = 0;
+		printf("start stop\n");
+	}
+
+
+}
+void NibpMgr::clearTxt(Fl_Button* b,void* p){
+	NibpMgr* pThis = (NibpMgr*)p;
+	pThis->m_displayTxt->value("");
+	g_linePos = 0;
 }
 void NibpMgr::sendPatientTypeCmd(){
 	switch(m_patientType){
 	case NIBP_ADULT:
+		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ADULT);
 		break;
 	case NIBP_ENFANT:
+		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ADULT);
 		break;
 	case NIBP_BABY:
+		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_BABY);
 		break;
 	default:
 		break;
@@ -132,14 +161,7 @@ void NibpMgr::sendPatientTypeCmd(){
 
 }
 void NibpMgr::sendIdMsg(){
-	BYTE tmp[6];
-	tmp[0] = 0x99;
-	tmp[1] = 0x06;
-	tmp[2] = Link_Msg;
-	tmp[3] = NIBP_CLIENT;
-	tmp[4] = tmp[1]+tmp[2]+tmp[3];
-	tmp[5] = 0xdd;
-	m_network.sendData(tmp,6);
+	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,NIBP_CLIENT);
 }
 BYTE receive_buf[1024];
 void NibpMgr::Data_Arrived_nibp(int fdt,void *pv){
@@ -164,9 +186,22 @@ void NibpMgr::appendData(const BYTE* buf,int len){
 	str += " ";
 	appendData(str.c_str());
 
+
 }
 void NibpMgr::appendData(const char * buf){
-	m_displayTxt->insert(buf);
+	int len = strlen(buf);
+	int pos = m_displayTxt->position();
+	m_displayTxt->position(pos+len);
+
+	g_linePos += len;
+	if(g_linePos>LINE_LEN){
+		m_displayTxt->insert(buf,g_linePos-LINE_LEN);
+		m_displayTxt->insert("\n");//换行
+		m_displayTxt->insert(buf+g_linePos-LINE_LEN);
+		g_linePos = 0;
+	}else{
+		m_displayTxt->insert(buf);
+	}
 }
 
 
