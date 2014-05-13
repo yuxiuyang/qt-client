@@ -20,16 +20,7 @@
 #include "network.h"
 #include "define.h"
 #include "analysenibp.h"
-enum PatientType{
-	NIBP_ADULT,					//成人
-	NIBP_ENFANT,					//儿童
-	NIBP_BABY,						//婴儿
-	NIBP_NONE,
-};
-enum NIBP_STATE{
-	START_NIBP=0x87,
-	STOP_NIBP,
-};
+
 class NibpMgr {
 public:
 	NibpMgr();

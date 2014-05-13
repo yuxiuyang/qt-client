@@ -87,8 +87,7 @@ void NibpMgr::connect(Fl_Widget *, void *p){
 	}
 	Fl::add_fd(pThis->m_network.getSockFd(),Data_Arrived_nibp,pThis);
 	pThis->sendIdMsg();
-	sleep(1);
-	pThis->sendPatientTypeCmd();
+	//sleep(1);
 	pThis->m_connectBox->label("connect success");
 	pThis->m_connectBtn->hide();
 	pThis->m_disConnectBtn->show();
@@ -127,11 +126,11 @@ void NibpMgr::startNibp(Fl_Button* b,void* p){
 	static int i = 0;
 	if(!i){
 		pThis->sendPatientTypeCmd();
-		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,START_NIBP);
+		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_START);
 		i ++;
 		printf("start nibp\n");
 	}else{
-		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,STOP_NIBP);
+		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
 		i = 0;
 		printf("start stop\n");
 	}

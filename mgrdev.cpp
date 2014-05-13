@@ -71,6 +71,7 @@ int MgrDev::sendData(int fd,const BYTE* data, int len) {
 		if (size <= 0) {
 			printf("maybe a error  send failure,and close fd=%d\n", fd);
 			close (fd);
+			break;
 		}
 		total += size;
 		if (size < len) {

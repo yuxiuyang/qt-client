@@ -140,5 +140,15 @@ enum LinkState{
     link_and_comfirmId,
     dis_link,
 };
-
+enum PatientType{
+	NIBP_ADULT,					//成人
+	NIBP_ENFANT,					//儿童
+	NIBP_BABY,						//婴儿
+	NIBP_NONE,
+};
+enum NIBP_STATE{
+    NIBP_START=0x87,
+    NIBP_STOP,
+    NIBP_TYPE,
+};
 #endif // DEFINE_H
