@@ -153,9 +153,13 @@ void NibpMgr::Data_Arrived_nibp(int fdt,void *pv){
 }
 
 void NibpMgr::appendData(const BYTE* buf,int len){
-	string str="";
+	static string str;
+	static char tmp[10];
+	str = "";
 	for(int i=0;i<len;i++){
-		str += buf[i];
+		memset(tmp,0,sizeof(tmp));
+		sprintf(tmp,"%02x ",buf[i]);
+		str += tmp;
 	}
 	str += " ";
 	appendData(str.c_str());

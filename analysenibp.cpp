@@ -6,7 +6,7 @@
  */
 
 #include "analysenibp.h"
-
+#include "nibpmgr.h"
 AnalyseNibp::AnalyseNibp(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
@@ -75,11 +75,14 @@ void AnalyseNibp::addBuf(const BYTE* buf,int len){
 bool AnalyseNibp::anal_pag(const BYTE* buf,const int len){
     switch(buf[2]){
     case Data_Msg:
-        //anal_DataPag(buf,len);
+        anal_DataPag(buf,len);
         break;
     case Link_Msg:
         //anal_ConnectPag(buf,len);
         break;
+    case Link_Request:
+    	((NibpMgr*)m_mgr)->sendIdMsg();
+    	break;
     default:
         break;
     }
@@ -93,4 +96,12 @@ bool AnalyseNibp::checkData(const BYTE* buf,const int len,const BYTE value){
     }
 
     return sum==value?true:false;
+}
+void AnalyseNibp::anal_DataPag(const BYTE* buf,int len){
+//	printf("anal_DataPag len=%d\n",len);
+//	for(int i=0;i<len;i++){
+//		printf("%02x ",buf[i]);
+//	}
+	//printf("end.....\n");
+	((NibpMgr*)m_mgr)->appendData(buf,len);
 }
