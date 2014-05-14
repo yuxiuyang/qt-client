@@ -110,11 +110,11 @@ void NibpMgr::selectType(Fl_Button *b, void *p) {
   //cb_info->redraw();
   printf("%s\n",msg);
 
-  if(strcmp(b->label(),"NIBP_ADULT")){
+  if(!strcmp(b->label(),"NIBP_ADULT")){
 	  pThis->m_patientType = NIBP_ADULT;
-  }else if(strcmp(b->label(),"NIBP_ENFANT")){
+  }else if(!strcmp(b->label(),"NIBP_ENFANT")){
 	  pThis->m_patientType = NIBP_ENFANT;
-  }if(strcmp(b->label(),"NIBP_BABY")){
+  }else if(!strcmp(b->label(),"NIBP_BABY")){
 	  pThis->m_patientType = NIBP_BABY;
   }else{
 	  pThis->m_patientType = NIBP_NONE;
@@ -134,8 +134,6 @@ void NibpMgr::startNibp(Fl_Button* b,void* p){
 		i = 0;
 		printf("start stop\n");
 	}
-
-
 }
 void NibpMgr::clearTxt(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;
@@ -143,12 +141,13 @@ void NibpMgr::clearTxt(Fl_Button* b,void* p){
 	g_linePos = 0;
 }
 void NibpMgr::sendPatientTypeCmd(){
+	printf("sendPatientTypeCmd  m_patientType=%d\n",m_patientType);
 	switch(m_patientType){
 	case NIBP_ADULT:
 		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ADULT);
 		break;
 	case NIBP_ENFANT:
-		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ADULT);
+		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ENFANT);
 		break;
 	case NIBP_BABY:
 		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_BABY);

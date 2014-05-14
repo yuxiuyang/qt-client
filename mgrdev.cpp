@@ -65,6 +65,11 @@ int MgrDev::sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd){
 	return sendData(fd,tmp,7);
 }
 int MgrDev::sendData(int fd,const BYTE* data, int len) {
+	printf("sendData start len=%d\n",len);
+	for(int i=0;i<len;i++){
+		printf("%02x ",data[i]);
+	}
+	printf("  end....\n");
 	int total = 0;
 	while (1) {
 		int size = send(fd, data + total, len, 0);

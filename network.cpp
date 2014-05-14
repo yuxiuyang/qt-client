@@ -11,7 +11,7 @@
 Network::Network()
 {
     memset(&m_serverAddress,0,sizeof(m_serverAddress));
-    m_serverPort = 8090;
+    m_serverPort = 9000;
 }
 bool Network::init(){
     m_sockFd = socket(AF_INET, SOCK_STREAM, 0);
