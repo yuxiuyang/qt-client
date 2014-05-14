@@ -142,6 +142,7 @@ void NibpMgr::clearTxt(Fl_Button* b,void* p){
 }
 void NibpMgr::sendPatientTypeCmd(){
 	printf("sendPatientTypeCmd  m_patientType=%d\n",m_patientType);
+	MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
 	switch(m_patientType){
 	case NIBP_ADULT:
 		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ADULT);
