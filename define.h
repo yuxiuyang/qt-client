@@ -60,7 +60,8 @@ enum ClientType_{
     SPO2_CLIENT,
     CO2_CLIENT,
     NIBP_CLIENT,
-    IBPCO_CLIENT,
+    IBP_CLIENT,
+    NARCO_CLIENT,
     CMD_CLIENT,//命令参数
     DISPLAY_CLIENT,
     NONE_CLIENT,
@@ -151,4 +152,31 @@ enum NIBP_STATE{
     NIBP_STOP,
     NIBP_TYPE,
 };
+
+
+//shutdown save
+enum STATE_SAVE{
+    NIBP_FRE=1,
+    NIBP_READRUM,
+    SPO2_FRE,
+    SPO2_READRUM,
+    ECG_FRE,
+    ECG_READRUM,
+    IBP_FRE,
+    IBP_READRUM,
+    CO2_FRE,
+    CO2_READRUM,
+    NARCO_FRE,
+    NARCO_READRUM,
+
+    SHUTDOWN_SAVE,
+
+    SHUTDOWN_NOT_SAVE,
+
+    STATE_COUNT,
+};
+
+
+
+
 #endif // DEFINE_H

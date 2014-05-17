@@ -5,8 +5,8 @@
  *      Author: root
  */
 
-#ifndef NIBPMGR_H_
-#define NIBPMGR_H_
+#ifndef NARCOMGR_H_
+#define NARCOMGR_H_
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Scroll.H>
@@ -19,26 +19,20 @@
 #include <stdio.h>
 #include "network.h"
 #include "define.h"
-#include "analysenibp.h"
+#include "analysenarco.h"
 
-class NibpMgr {
+class NarcoMgr {
 public:
-	NibpMgr();
-	virtual ~NibpMgr();
+	NarcoMgr();
+	virtual ~NarcoMgr();
 
 	void createControl(Fl_Group* ww);
 
 	static void connect(Fl_Widget *, void *);
 	static void disConnect(Fl_Widget *, void *);
-	static void selectType(Fl_Button *b, void *);
-	static void startNibp(Fl_Button* b,void* p);
 	static void clearTxt(Fl_Button* b,void* p);
 	void sendIdMsg();
-	PatientType getPatientType(){
-		return m_patientType;
-	}
-	void sendPatientTypeCmd();
-	static void Data_Arrived_nibp(int fdt,void *pv);
+	static void Data_Arrived_narco(int fdt,void *pv);
 	void appendData(const BYTE* buf,int len);
 	void appendData(const char * buf);
 private:
@@ -47,13 +41,10 @@ private:
 	Fl_Button* m_disConnectBtn;
 	Fl_Box* m_connectBox;
 	Fl_Multiline_Output* m_displayTxt;
-	Fl_Button* m_startNibp;
 	Fl_Button* m_clearTxt;
 	Network m_network;
 
-	PatientType m_patientType;
-
-	AnalyseNibp* m_analNibp;
+	AnalyseNarco* m_analNarco;
 };
 
 #endif /* NIBPMGR_H_ */

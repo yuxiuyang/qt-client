@@ -1,26 +1,26 @@
 /*
- * analysenibp.cpp
+ * AnalyseNarco.cpp
  *
  *  Created on: 9 May, 2014
  *      Author: root
  */
 
-#include "analysenibp.h"
-#include "nibpmgr.h"
-AnalyseNibp::AnalyseNibp(void* p){
+#include "analysenarco.h"
+#include "narcomgr.h"
+AnalyseNarco::AnalyseNarco(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
 	assert(m_mgr);
 }
 
-AnalyseNibp::~AnalyseNibp() {
+AnalyseNarco::~AnalyseNarco() {
 	// TODO Auto-generated destructor stub
 }
-void AnalyseNibp::handle(const BYTE* buf,int len){
+void AnalyseNarco::handle(const BYTE* buf,int len){
     addBuf(buf,len);
     open_block();
 }
-int AnalyseNibp::open_block(){
+int AnalyseNarco::open_block(){
     int ix=0;
     while(ix<m_curPos&&m_dataBuf[ix]!=0x99){//找到 99 开头的包。找不到，则丢掉之前数据
         ix++;
@@ -61,7 +61,7 @@ int AnalyseNibp::open_block(){
      return 0;
 }
 
-void AnalyseNibp::addBuf(const BYTE* buf,int len){
+void AnalyseNarco::addBuf(const BYTE* buf,int len){
     if(m_curPos+len<=MAX_DATA_BUF){
           memmove(m_dataBuf+m_curPos,buf,len);
           m_curPos+=len;
@@ -73,7 +73,7 @@ void AnalyseNibp::addBuf(const BYTE* buf,int len){
         }
     }
 }
-bool AnalyseNibp::anal_pag(const BYTE* buf,const int len){
+bool AnalyseNarco::anal_pag(const BYTE* buf,const int len){
     switch(buf[2]){
     case Data_Msg:
         anal_DataPag(buf,len);
@@ -82,7 +82,7 @@ bool AnalyseNibp::anal_pag(const BYTE* buf,const int len){
         //anal_ConnectPag(buf,len);
         break;
     case Link_Request:
-    	((NibpMgr*)m_mgr)->sendIdMsg();
+    	((NarcoMgr*)m_mgr)->sendIdMsg();
     	break;
     default:
         break;
@@ -90,7 +90,7 @@ bool AnalyseNibp::anal_pag(const BYTE* buf,const int len){
 
     return true;
 }
-bool AnalyseNibp::checkData(const BYTE* buf,const int len,const BYTE value){
+bool AnalyseNarco::checkData(const BYTE* buf,const int len,const BYTE value){
     BYTE sum=0x00;
     for(int i=0;i<len;i++){
         sum += buf[i];
@@ -98,11 +98,11 @@ bool AnalyseNibp::checkData(const BYTE* buf,const int len,const BYTE value){
 
     return sum==value?true:false;
 }
-void AnalyseNibp::anal_DataPag(const BYTE* buf,int len){
+void AnalyseNarco::anal_DataPag(const BYTE* buf,int len){
 //	printf("anal_DataPag len=%d\n",len);
 //	for(int i=0;i<len;i++){
 //		printf("%02x ",buf[i]);
 //	}
 	//printf("end.....\n");
-	((NibpMgr*)m_mgr)->appendData(buf+3,len-5);
+	((NarcoMgr*)m_mgr)->appendData(buf+3,len-5);
 }

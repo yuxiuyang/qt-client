@@ -25,13 +25,11 @@ bool Network::init(){
     m_serverAddress.sin_addr.s_addr= inet_addr("127.0.0.1");
     m_serverAddress.sin_port=htons(m_serverPort);
     //printf("s_addr = %#x ,port : %#x\r\n",m_serverAddress.sin_addr.s_addr,m_serverAddress.sin_port);
-
+    //init();
     return true;
 }
 
 int Network::connect(){
-	if(m_sockFd!=-1) close(m_sockFd);
-    init();
     printf("connect m_sockFd=%d\n",m_sockFd);
 
     if(-1 == ::connect(m_sockFd,(struct sockaddr *)(&m_serverAddress), sizeof(struct sockaddr)))

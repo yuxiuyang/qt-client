@@ -5,32 +5,32 @@
  *      Author: root
  */
 
-#include "nibpmgr.h"
+#include "ecgmgr.h"
 #include "mgrdev.h"
 #define LINE_LEN 60
 static int g_linePos=0;
-NibpMgr::NibpMgr() {
+EcgMgr::EcgMgr() {
 	// TODO Auto-generated constructor stub
-	m_analNibp = new AnalyseNibp(this);
+	m_analEcg = new AnalyseEcg(this);
 }
 
-NibpMgr::~NibpMgr() {
+EcgMgr::~EcgMgr() {
 	// TODO Auto-generated destructor stub
-	delete m_analNibp;
-	m_analNibp = NULL;
+	delete m_analEcg;
+	m_analEcg = NULL;
 
 	disConnect(0,0);
 }
 
-void NibpMgr::createControl(Fl_Group* ww){
+void EcgMgr::createControl(Fl_Group* ww){
 	m_connectBtn = new Fl_Button(20, 30, 82, 30, "connect");
 	m_connectBtn->callback(connect,this);
 	ww->add(m_connectBtn);
 
-	m_connectBox = new Fl_Box(120,30,140,30,"not connect");
+	m_connectBox = new Fl_Box(120,30,100,30,"not connect");
 	ww->add(m_connectBox);
 
-	m_disConnectBtn = new Fl_Button(270, 30, 82, 30, " disconnect");
+	m_disConnectBtn = new Fl_Button(250, 30, 82, 30, " disconnect");
 	m_disConnectBtn->callback(disConnect,this);
 	m_disConnectBtn->hide();
 	ww->add(m_disConnectBtn);
@@ -71,42 +71,35 @@ void NibpMgr::createControl(Fl_Group* ww){
 		ww->add(group);
 	}
 
-	m_startNibp = new Fl_Button(240, 340, 80, 30, " start nibp");
-	m_startNibp->callback((Fl_Callback*)startNibp,this);
-	ww->add(m_startNibp);
-
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
 	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
 	ww->add(m_clearTxt);
-
-	m_network.init();
 }
-void NibpMgr::connect(Fl_Widget *, void *p){
-	NibpMgr* pThis = (NibpMgr*)p;
+void EcgMgr::connect(Fl_Widget *, void *p){
+	EcgMgr* pThis = (EcgMgr*)p;
 	if(-1 == pThis->m_network.connect()){
 		printf("connect failure");
 		return;
 	}
-	Fl::add_fd(pThis->m_network.getSockFd(),Data_Arrived_nibp,pThis);
+	Fl::add_fd(pThis->m_network.getSockFd(),Data_Arrived_ecg,pThis);
 	pThis->sendIdMsg();
 	//sleep(1);
 	pThis->m_connectBox->label("connect success");
-	//pThis->m_connectBtn->activate();
-	pThis->m_connectBtn->deactivate();
+	pThis->m_connectBtn->hide();
 	pThis->m_disConnectBtn->show();
 }
-void NibpMgr::disConnect(Fl_Widget *, void *p){
-	NibpMgr* pThis = (NibpMgr*)p;
+void EcgMgr::disConnect(Fl_Widget *, void *p){
+	EcgMgr* pThis = (EcgMgr*)p;
 	Fl::remove_fd(pThis->m_network.getSockFd());
 
 	pThis->m_network.disConnect();
 	pThis->m_connectBox->label("not connect");
-	pThis->m_connectBtn->activate();
-	pThis->m_disConnectBtn->deactivate();
+	pThis->m_connectBtn->show();
+	pThis->m_disConnectBtn->hide();
 }
 
-void NibpMgr::selectType(Fl_Button *b, void *p) {
-	NibpMgr* pThis = (NibpMgr*)p;
+void EcgMgr::selectType(Fl_Button *b, void *p) {
+	EcgMgr* pThis = (EcgMgr*)p;
   char msg[256];
   sprintf(msg, "Label: '%s'\nValue: %d", b->label(),b->value());
   //cb_info->value(msg);
@@ -124,26 +117,13 @@ void NibpMgr::selectType(Fl_Button *b, void *p) {
   }
   pThis->sendPatientTypeCmd();
 }
-void NibpMgr::startNibp(Fl_Button* b,void* p){
-	NibpMgr* pThis = (NibpMgr*)p;
-	static int i = 0;
-	if(!i){
-		pThis->sendPatientTypeCmd();
-		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_START);
-		i ++;
-		printf("start nibp\n");
-	}else{
-		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
-		i = 0;
-		printf("start stop\n");
-	}
-}
-void NibpMgr::clearTxt(Fl_Button* b,void* p){
-	NibpMgr* pThis = (NibpMgr*)p;
+
+void EcgMgr::clearTxt(Fl_Button* b,void* p){
+	EcgMgr* pThis = (EcgMgr*)p;
 	pThis->m_displayTxt->value("");
 	g_linePos = 0;
 }
-void NibpMgr::sendPatientTypeCmd(){
+void EcgMgr::sendPatientTypeCmd(){
 	printf("sendPatientTypeCmd  m_patientType=%d\n",m_patientType);
 	MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
 	switch(m_patientType){
@@ -162,22 +142,22 @@ void NibpMgr::sendPatientTypeCmd(){
 
 
 }
-void NibpMgr::sendIdMsg(){
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,NIBP_CLIENT);
+void EcgMgr::sendIdMsg(){
+	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,ECG_CLIENT);
 }
 
-void NibpMgr::Data_Arrived_nibp(int fdt,void *pv){
+void EcgMgr::Data_Arrived_ecg(int fdt,void *pv){
 	BYTE receive_buf[1024];
 	memset(receive_buf,0,sizeof(receive_buf));
 	int nLen = 0;
-	NibpMgr* pthis=(NibpMgr*)pv;
+	EcgMgr* pthis=(EcgMgr*)pv;
 	if(0 != (nLen = read(fdt,(void *)receive_buf,80))){
 		/*	send data to analyse	*/
-		pthis->m_analNibp->handle(receive_buf,nLen);
+		pthis->m_analEcg->handle(receive_buf,nLen);
 	}
 }
 
-void NibpMgr::appendData(const BYTE* buf,int len){
+void EcgMgr::appendData(const BYTE* buf,int len){
 	static string str;
 	static char tmp[10];
 	str = "";
@@ -191,7 +171,7 @@ void NibpMgr::appendData(const BYTE* buf,int len){
 
 
 }
-void NibpMgr::appendData(const char * buf){
+void EcgMgr::appendData(const char * buf){
 	int len = strlen(buf);
 	int pos = m_displayTxt->position();
 	m_displayTxt->position(pos+len);
