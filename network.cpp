@@ -30,6 +30,7 @@ bool Network::init(){
 }
 
 int Network::connect(){
+	init();
     printf("connect m_sockFd=%d\n",m_sockFd);
 
     if(-1 == ::connect(m_sockFd,(struct sockaddr *)(&m_serverAddress), sizeof(struct sockaddr)))

@@ -37,19 +37,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: qt-Client
+all: qt-client
 
 # Tool invocations
-qt-Client: $(OBJS) $(USER_OBJS)
+qt-client: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/root/fltk-1.1.0b13_ut_x86_release/lib -o "qt-Client" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/root/fltk-1.3.2/lib -o "qt-client" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) qt-Client
+	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) qt-client
 	-@echo ' '
 
 .PHONY: all clean dependents

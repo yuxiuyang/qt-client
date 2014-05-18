@@ -79,7 +79,6 @@ void NibpMgr::createControl(Fl_Group* ww){
 	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
 	ww->add(m_clearTxt);
 
-	m_network.init();
 }
 void NibpMgr::connect(Fl_Widget *, void *p){
 	NibpMgr* pThis = (NibpMgr*)p;

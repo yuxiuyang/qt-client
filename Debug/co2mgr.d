@@ -1,4 +1,4 @@
-nibpmgr.d nibpmgr.o: ../nibpmgr.cpp ../nibpmgr.h \
+co2mgr.d co2mgr.o: ../co2mgr.cpp ../co2mgr.h \
   /root/fltk-1.3.2/FL/Fl_Output.H /root/fltk-1.3.2/FL/Fl_Input.H \
   /root/fltk-1.3.2/FL/Fl_Input_.H /root/fltk-1.3.2/FL/Fl_Widget.H \
   /root/fltk-1.3.2/FL/Enumerations.H /root/fltk-1.3.2/FL/Fl_Export.H \
@@ -11,9 +11,9 @@ nibpmgr.d nibpmgr.o: ../nibpmgr.cpp ../nibpmgr.h \
   /root/fltk-1.3.2/FL/Fl_Output.H /root/fltk-1.3.2/FL/Fl_Window.H \
   /root/fltk-1.3.2/FL/Fl_Box.H /root/fltk-1.3.2/FL/Fl_Round_Button.H \
   /root/fltk-1.3.2/FL/Fl_Light_Button.H /root/fltk-1.3.2/FL/Fl_Button.H \
-  ../network.h ../netdev.h ../define.h ../analysenibp.h ../mgrdev.h
+  ../network.h ../netdev.h ../define.h ../analyseco2.h ../mgrdev.h
 
-../nibpmgr.h:
+../co2mgr.h:
 
 /root/fltk-1.3.2/FL/Fl_Output.H:
 
@@ -67,6 +67,6 @@ nibpmgr.d nibpmgr.o: ../nibpmgr.cpp ../nibpmgr.h \
 
 ../define.h:
 
-../analysenibp.h:
+../analyseco2.h:
 
 ../mgrdev.h:
