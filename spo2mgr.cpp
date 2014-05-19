@@ -7,6 +7,7 @@
 
 #include "spo2mgr.h"
 #include "mgrdev.h"
+#include "simulator_client.h"
 #define LINE_LEN 60
 static int g_linePos=0;
 Spo2Mgr::Spo2Mgr() {
@@ -40,6 +41,10 @@ void Spo2Mgr::createControl(Fl_Group* ww){
 	m_displayTxt->tooltip("This is an Fl_Multiline_Output widget.");
 	ww->add(m_displayTxt);
 
+	m_sendTestDataBtn = new Fl_Button(210, 340, 80, 30, " send test data");
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	ww->add(m_sendTestDataBtn);
+
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
 	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
 	ww->add(m_clearTxt);
@@ -66,7 +71,11 @@ void Spo2Mgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->show();
 	pThis->m_disConnectBtn->hide();
 }
-
+void Spo2Mgr::sendTestData(Fl_Button* b,void* p){
+	printf("spo2mgr send test data start\n");
+	Spo2Mgr* pThis = (Spo2Mgr*)p;
+	::sendTestData(pThis->m_network.getSockFd());
+}
 void Spo2Mgr::clearTxt(Fl_Button* b,void* p){
 	Spo2Mgr* pThis = (Spo2Mgr*)p;
 	pThis->m_displayTxt->value("");

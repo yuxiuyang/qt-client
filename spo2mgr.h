@@ -31,6 +31,7 @@ public:
 	static void connect(Fl_Widget *, void *);
 	static void disConnect(Fl_Widget *, void *);
 	static void clearTxt(Fl_Button* b,void* p);
+	static void sendTestData(Fl_Button* b,void* p);
 	void sendIdMsg();
 	static void Data_Arrived_spo2(int fdt,void *pv);
 	void appendData(const BYTE* buf,int len);
@@ -41,6 +42,7 @@ private:
 	Fl_Button* m_disConnectBtn;
 	Fl_Box* m_connectBox;
 	Fl_Multiline_Output* m_displayTxt;
+	Fl_Button* m_sendTestDataBtn;
 	Fl_Button* m_clearTxt;
 	Network m_network;
 
