@@ -7,6 +7,7 @@
 
 #include "ecgmgr.h"
 #include "mgrdev.h"
+#include "simulator_client.h"
 #define LINE_LEN 60
 static int g_linePos=0;
 EcgMgr::EcgMgr() {
@@ -71,6 +72,10 @@ void EcgMgr::createControl(Fl_Group* ww){
 		ww->add(group);
 	}
 
+	m_sendTestDataBtn = new Fl_Button(160, 340, 180, 30, " send test data");
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	ww->add(m_sendTestDataBtn);
+
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
 	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
 	ww->add(m_clearTxt);
@@ -97,7 +102,20 @@ void EcgMgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->show();
 	pThis->m_disConnectBtn->hide();
 }
+void EcgMgr::sendTestData(Fl_Button* b,void* p){
+	EcgMgr* pThis = (EcgMgr*)p;
 
+	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
+		printf("EcgMgr stop send test data\n");
+		pThis->m_sendTestDataBtn->label("start send test data");
+		::gStopSendTestData(ECG_CLIENT);
+		return;
+	}
+
+	printf("EcgMgr spo2mgr send test data start\n");
+	pThis->m_sendTestDataBtn->label("stop send test data");
+	::gSendTestData(pThis->m_network.getSockFd(),ECG_CLIENT);
+}
 void EcgMgr::selectType(Fl_Button *b, void *p) {
 	EcgMgr* pThis = (EcgMgr*)p;
   char msg[256];

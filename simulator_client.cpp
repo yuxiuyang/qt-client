@@ -6,27 +6,128 @@
  */
 
 #include "simulator_client.h"
+struct INFO_DATA{
+    int fd;
+    ClientType_ clientId;
+    BYTE buf[1024];
+    int len;
+    MsgType_ type;
+};
+void gInitGlobal() {
+	if (bInit)
+		return;
 
-void stopSendTestData(){
-	bSend = false;
+
+	for (int i = ECG_CLIENT; i < CMD_CLIENT; i++) {
+		g_threadId[i] = -1;
+		bSend[i] = true;
+		g_type[i] = NULL;
+	}
+
+	bInit = true;
 }
-void sendTestData(int fd){
-	bSend = true;
-	char testData[] = "123456789abcdefghijklmnopkrstuvwxyz";
+void gStopSendTestData(ClientType_ id){
+	bSend[id] = false;
+}
+void gSendTestData(int fd,ClientType_ id){
+	if (fd <= 0){
+		return;
+	}
+	if(g_threadId[id]==-1){
+		INFO_DATA* info = new INFO_DATA;
+		info->fd = fd;
+		info->clientId = id;
+		info->type = Data_Msg;
+		int ret = pthread_create(&g_threadId[id],0, __Invoker,info);
+		if (ret != 0) {
+	   		perror("pthread_create: failure");
+	   		delete info;
+	   		g_threadId[id] = -1;
+	   		return ;
+	   	}
+	}
+
+
+}
+
+void* __Invoker(void* arg){
+	INFO_DATA *info = (INFO_DATA*)arg;
+	assert(info);
+
+	BYTE testData[256];
+	for (int i = 0; i < 256; i++) {
+		testData[i] = i;
+	}
+
 	int len = sizeof(testData);
 	int pos = 0;
 
 	int count = 6;
-	while(bSend){
-		if(pos+count<len){
-			int num = send(fd,testData+pos,count,0);
-			pos += num;
-		}else{
-			int num = send(fd,testData+pos,pos+count-len,0);
+	while (bSend[info->clientId]) {
+		if (pos + count < len) {
+			gSendData(info->fd, info->type, testData + pos, count, info->clientId);
+			pos += count;
+		} else {
+			gSendData(info->fd, info->type, testData + pos, pos + count - len, info->clientId);
 			pos = 0;
-			if(num==0)
-				continue;
 		}
 		sleep(1);
+	}
+
+	g_threadId[info->clientId] = -1;
+	delete info;
+
+	return NULL;
+}
+void gSendData(int fd,MsgType_ type, BYTE* buf, int len, ClientType_ id) {
+	if (fd <= 0 || id<ECG_CLIENT || id>=CMD_CLIENT)
+		return;
+	//cout<<"sendData fd="<<fd<<endl;
+	//驱动任务巢
+
+	if(!g_type[id]){
+		g_type[id] = GetJobNest();
+		assert(g_type[id]);
+	}
+	CJobPkg* pkg = NULL;
+	pkg = g_type[id]->GetJobPkg(0);
+
+	INFO_DATA* pci = (INFO_DATA*) pkg->Alloc(sizeof(INFO_DATA));
+	assert(pci);
+	pci->fd = fd;
+	pci->len = len;
+	pci->type = type;
+	pci->clientId = id;
+	memcpy(pci->buf, buf, sizeof(BYTE) * len);
+//	for(int i=0;i<len;i++){
+//		pci->buf[i] = buf[i];
+//	}
+
+	pkg->SetExecFunction(sendData_);
+	pkg->SetExecParam(pci);
+	pkg->SetID(1); //different thread have different source. as to this ID ,can delete the soucre.
+
+	g_type[id]->SubmitJobPkg(pkg);
+}
+int  gSendData(int fd,MsgType_ type,ClientType_ clientId){
+	MgrDev::getInstance()->sendData(fd,type,clientId);
+}
+int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd){
+	MgrDev::getInstance()->sendData(fd,type,clientId,cmd);
+}
+int  gSendData(int fd,const BYTE* buf,int len){
+	MgrDev::getInstance()->sendData(fd,buf,len);
+}
+
+
+
+
+void sendData_(void* pv){
+	INFO_DATA* dataMsg = (INFO_DATA*) pv;
+	assert(dataMsg);
+
+	int num = MgrDev::getInstance()->sendData(dataMsg->fd, dataMsg->type, dataMsg->clientId,dataMsg->buf, dataMsg->len);
+	if(num<=0){
+		bSend[dataMsg->clientId] = false;
 	}
 }

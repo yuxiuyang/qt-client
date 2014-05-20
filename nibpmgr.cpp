@@ -7,6 +7,7 @@
 
 #include "nibpmgr.h"
 #include "mgrdev.h"
+#include "simulator_client.h"
 #define LINE_LEN 60
 static int g_linePos=0;
 NibpMgr::NibpMgr() {
@@ -71,9 +72,13 @@ void NibpMgr::createControl(Fl_Group* ww){
 		ww->add(group);
 	}
 
-	m_startNibp = new Fl_Button(240, 340, 80, 30, " start nibp");
+	m_startNibp = new Fl_Button(160, 340, 180, 30, " start nibp");
 	m_startNibp->callback((Fl_Callback*)startNibp,this);
 	ww->add(m_startNibp);
+
+	m_sendTestDataBtn = new Fl_Button(160, 380, 180, 30, " send test data");
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	ww->add(m_sendTestDataBtn);
 
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
 	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
@@ -136,6 +141,21 @@ void NibpMgr::startNibp(Fl_Button* b,void* p){
 		i = 0;
 		printf("start stop\n");
 	}
+}
+
+void NibpMgr::sendTestData(Fl_Button* b,void* p){
+	NibpMgr* pThis = (NibpMgr*)p;
+
+	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
+		printf("stop send test data\n");
+		pThis->m_sendTestDataBtn->label("start send test data");
+		::gStopSendTestData(NIBP_CLIENT);
+		return;
+	}
+
+	printf("spo2mgr send test data start\n");
+	pThis->m_sendTestDataBtn->label("stop send test data");
+	::gSendTestData(pThis->m_network.getSockFd(),NIBP_CLIENT);
 }
 void NibpMgr::clearTxt(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;

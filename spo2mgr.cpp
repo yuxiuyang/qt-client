@@ -41,7 +41,7 @@ void Spo2Mgr::createControl(Fl_Group* ww){
 	m_displayTxt->tooltip("This is an Fl_Multiline_Output widget.");
 	ww->add(m_displayTxt);
 
-	m_sendTestDataBtn = new Fl_Button(210, 340, 80, 30, " send test data");
+	m_sendTestDataBtn = new Fl_Button(160, 340, 180, 30, " send test data");
 	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
 	ww->add(m_sendTestDataBtn);
 
@@ -72,9 +72,18 @@ void Spo2Mgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_disConnectBtn->hide();
 }
 void Spo2Mgr::sendTestData(Fl_Button* b,void* p){
-	printf("spo2mgr send test data start\n");
 	Spo2Mgr* pThis = (Spo2Mgr*)p;
-	::sendTestData(pThis->m_network.getSockFd());
+
+	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
+		printf("stop send test data\n");
+		pThis->m_sendTestDataBtn->label("start send test data");
+		::gStopSendTestData(SPO2_CLIENT);
+		return;
+	}
+
+	printf("spo2mgr send test data start\n");
+	pThis->m_sendTestDataBtn->label("stop send test data");
+	::gSendTestData(pThis->m_network.getSockFd(),SPO2_CLIENT);
 }
 void Spo2Mgr::clearTxt(Fl_Button* b,void* p){
 	Spo2Mgr* pThis = (Spo2Mgr*)p;

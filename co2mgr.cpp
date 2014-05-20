@@ -7,6 +7,7 @@
 
 #include "co2mgr.h"
 #include "mgrdev.h"
+#include "simulator_client.h"
 #define LINE_LEN 60
 static int g_linePos=0;
 Co2Mgr::Co2Mgr() {
@@ -40,6 +41,10 @@ void Co2Mgr::createControl(Fl_Group* ww){
 	m_displayTxt->tooltip("This is an Fl_Multiline_Output widget.");
 	ww->add(m_displayTxt);
 
+	m_sendTestDataBtn = new Fl_Button(160, 340, 180, 30, " send test data");
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	ww->add(m_sendTestDataBtn);
+
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
 	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
 	ww->add(m_clearTxt);
@@ -66,7 +71,20 @@ void Co2Mgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->show();
 	pThis->m_disConnectBtn->hide();
 }
+void Co2Mgr::sendTestData(Fl_Button* b,void* p){
+	Co2Mgr* pThis = (Co2Mgr*)p;
 
+	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
+		printf("stop send test data\n");
+		pThis->m_sendTestDataBtn->label("start send test data");
+		::gStopSendTestData(CO2_CLIENT);
+		return;
+	}
+
+	printf("spo2mgr send test data start\n");
+	pThis->m_sendTestDataBtn->label("stop send test data");
+	::gSendTestData(pThis->m_network.getSockFd(),CO2_CLIENT);
+}
 void Co2Mgr::clearTxt(Fl_Button* b,void* p){
 	Co2Mgr* pThis = (Co2Mgr*)p;
 	pThis->m_displayTxt->value("");

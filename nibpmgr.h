@@ -33,6 +33,7 @@ public:
 	static void selectType(Fl_Button *b, void *);
 	static void startNibp(Fl_Button* b,void* p);
 	static void clearTxt(Fl_Button* b,void* p);
+	static void sendTestData(Fl_Button* b,void* p);
 	void sendIdMsg();
 	PatientType getPatientType(){
 		return m_patientType;
@@ -46,6 +47,7 @@ private:
 	Fl_Button* m_connectBtn;
 	Fl_Button* m_disConnectBtn;
 	Fl_Box* m_connectBox;
+	Fl_Button* m_sendTestDataBtn;
 	Fl_Multiline_Output* m_displayTxt;
 	Fl_Button* m_startNibp;
 	Fl_Button* m_clearTxt;

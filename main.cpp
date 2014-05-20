@@ -35,7 +35,7 @@ void send_msg(int ,int ,int){
 }
 
 
-
+#include "simulator_client.h"
 
 
 void connect(Fl_Widget *, void *) {
@@ -56,6 +56,7 @@ int main(){
 	IbpMgr ibpMgr;
 	Co2Mgr co2Mgr;
 	NarcoMgr narcoMgr;
+	gInitGlobal();
 	//Fl_Window *window = new Fl_Window(240,100,500,450,"client");
 	//window->position(300,200);
 
@@ -72,7 +73,7 @@ int main(){
 		//o->color((Fl_Color)8);
 		o->tooltip("the various index cards test different aspects of the Fl_Tabs widget");
 		o->selection_color((Fl_Color) 4);
-		o->labelcolor(FL_BACKGROUND2_COLOR);
+		o->labelcolor((Fl_Color) 9);
 		{
 			Fl_Group* o = new Fl_Group(2, 20, foo_window->w()-4, foo_window->h()-4, "NIBP");
 			o->tooltip("this Tab tests correct keyboard navigation between text input fields");

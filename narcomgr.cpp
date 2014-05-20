@@ -7,6 +7,7 @@
 
 #include "narcomgr.h"
 #include "mgrdev.h"
+#include "simulator_client.h"
 #define LINE_LEN 60
 static int g_linePos=0;
 NarcoMgr::NarcoMgr() {
@@ -40,6 +41,10 @@ void NarcoMgr::createControl(Fl_Group* ww){
 	m_displayTxt->tooltip("This is an Fl_Multiline_Output widget.");
 	ww->add(m_displayTxt);
 
+	m_sendTestDataBtn = new Fl_Button(160, 340, 180, 30, " send test data");
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	ww->add(m_sendTestDataBtn);
+
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
 	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
 	ww->add(m_clearTxt);
@@ -66,7 +71,20 @@ void NarcoMgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->show();
 	pThis->m_disConnectBtn->hide();
 }
+void NarcoMgr::sendTestData(Fl_Button* b,void* p){
+	NarcoMgr* pThis = (NarcoMgr*)p;
 
+	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
+		printf("stop send test data\n");
+		pThis->m_sendTestDataBtn->label("start send test data");
+		::gStopSendTestData(NARCO_CLIENT);
+		return;
+	}
+
+	printf("spo2mgr send test data start\n");
+	pThis->m_sendTestDataBtn->label("stop send test data");
+	::gSendTestData(pThis->m_network.getSockFd(),NARCO_CLIENT);
+}
 void NarcoMgr::clearTxt(Fl_Button* b,void* p){
 	NarcoMgr* pThis = (NarcoMgr*)p;
 	pThis->m_displayTxt->value("");
