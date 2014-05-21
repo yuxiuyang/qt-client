@@ -132,15 +132,27 @@ void NibpMgr::startNibp(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;
 	static int i = 0;
 	if(!i){
-		pThis->sendPatientTypeCmd();
-		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_START);
-		i ++;
 		printf("start nibp\n");
+		pThis->sendPatientTypeCmd();
+		gSendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_START);
+		i ++;
 	}else{
-		MgrDev::getInstance()->sendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
+		gSendData(pThis->m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
 		i = 0;
 		printf("start stop\n");
 	}
+}
+void NibpMgr::sentTestData(){
+	printf("start send test data\n");
+	m_sendTestDataBtn->label("stop send test data");
+	m_sendTestDataBtn->redraw();
+	::gSendTestData(m_network.getSockFd(),NIBP_CLIENT);
+}
+void NibpMgr::stopSendTestData(){
+	printf("stop Send Test Data ");
+	m_sendTestDataBtn->label("start send test data");
+	m_sendTestDataBtn->redraw();
+	::gStopSendTestData(NIBP_CLIENT);
 }
 
 void NibpMgr::sendTestData(Fl_Button* b,void* p){
@@ -149,13 +161,13 @@ void NibpMgr::sendTestData(Fl_Button* b,void* p){
 	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
 		printf("stop send test data\n");
 		pThis->m_sendTestDataBtn->label("start send test data");
-		::gStopSendTestData(NIBP_CLIENT);
+		pThis->stopSendTestData();
 		return;
 	}
 
-	printf("spo2mgr send test data start\n");
+	printf("spo2mgr send test data start  NIBP_CLIENT=%02x\n",NIBP_CLIENT);
 	pThis->m_sendTestDataBtn->label("stop send test data");
-	::gSendTestData(pThis->m_network.getSockFd(),NIBP_CLIENT);
+	pThis->sentTestData();
 }
 void NibpMgr::clearTxt(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;
@@ -164,16 +176,16 @@ void NibpMgr::clearTxt(Fl_Button* b,void* p){
 }
 void NibpMgr::sendPatientTypeCmd(){
 	printf("sendPatientTypeCmd  m_patientType=%d\n",m_patientType);
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
+	gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
 	switch(m_patientType){
 	case NIBP_ADULT:
-		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ADULT);
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_ADULT);
 		break;
 	case NIBP_ENFANT:
-		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ENFANT);
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_ENFANT);
 		break;
 	case NIBP_BABY:
-		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_BABY);
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_BABY);
 		break;
 	default:
 		break;
@@ -182,7 +194,7 @@ void NibpMgr::sendPatientTypeCmd(){
 
 }
 void NibpMgr::sendIdMsg(){
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,NIBP_CLIENT);
+	gSendData(m_network.getSockFd(),Link_Msg,NIBP_CLIENT);
 }
 
 void NibpMgr::Data_Arrived_nibp(int fdt,void *pv){

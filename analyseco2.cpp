@@ -81,6 +81,8 @@ bool AnalyseCo2::anal_pag(const BYTE* buf,const int len){
     case Link_Msg:
         //anal_ConnectPag(buf,len);
         break;
+    case Cmd_Msg:
+    	break;
     case Link_Request:
     	((Co2Mgr*)m_mgr)->sendIdMsg();
     	break;
@@ -105,4 +107,13 @@ void AnalyseCo2::anal_DataPag(const BYTE* buf,int len){
 //	}
 	//printf("end.....\n");
 	((Co2Mgr*)m_mgr)->appendData(buf+3,len-5);
+}
+
+void AnalyseCo2::anal_CmdPag(BYTE cmd,BYTE param){
+	switch(cmd){
+	case MODE_COLLECTDATAS:
+		break;
+	case MODE_NORMAL:
+		break;
+	}
 }

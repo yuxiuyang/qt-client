@@ -92,7 +92,7 @@ void IbpMgr::clearTxt(Fl_Button* b,void* p){
 }
 
 void IbpMgr::sendIdMsg(){
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,IBP_CLIENT);
+	gSendData(m_network.getSockFd(),Link_Msg,IBP_CLIENT);
 }
 
 void IbpMgr::Data_Arrived_ibp(int fdt,void *pv){

@@ -92,7 +92,7 @@ void Spo2Mgr::clearTxt(Fl_Button* b,void* p){
 }
 
 void Spo2Mgr::sendIdMsg(){
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,SPO2_CLIENT);
+	gSendData(m_network.getSockFd(),Link_Msg,SPO2_CLIENT);
 }
 
 void Spo2Mgr::Data_Arrived_spo2(int fdt,void *pv){

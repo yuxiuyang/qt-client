@@ -18,7 +18,8 @@ public:
 	static MgrDev* getInstance();
 	int sendData(int fd,MsgType_ type,ClientType_ clientId,const BYTE* buf,int len);
 	int sendData(int fd,MsgType_ type,ClientType_ clientId);
-	int sendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd);
+	int sendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd,BYTE param=0x00);
+private:
 	int sendData(int fd,const BYTE* buf,int len);
 private:
 	static MgrDev* m_instance;

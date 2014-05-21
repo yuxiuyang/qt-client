@@ -92,7 +92,7 @@ void NarcoMgr::clearTxt(Fl_Button* b,void* p){
 }
 
 void NarcoMgr::sendIdMsg(){
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,NARCO_CLIENT);
+	gSendData(m_network.getSockFd(),Link_Msg,NARCO_CLIENT);
 }
 
 void NarcoMgr::Data_Arrived_narco(int fdt,void *pv){

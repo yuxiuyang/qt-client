@@ -143,16 +143,16 @@ void EcgMgr::clearTxt(Fl_Button* b,void* p){
 }
 void EcgMgr::sendPatientTypeCmd(){
 	printf("sendPatientTypeCmd  m_patientType=%d\n",m_patientType);
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
+	gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
 	switch(m_patientType){
 	case NIBP_ADULT:
-		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ADULT);
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_ADULT);
 		break;
 	case NIBP_ENFANT:
-		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_ENFANT);
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_ENFANT);
 		break;
 	case NIBP_BABY:
-		MgrDev::getInstance()->sendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_BABY);
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_BABY);
 		break;
 	default:
 		break;
@@ -161,7 +161,7 @@ void EcgMgr::sendPatientTypeCmd(){
 
 }
 void EcgMgr::sendIdMsg(){
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,ECG_CLIENT);
+	gSendData(m_network.getSockFd(),Link_Msg,ECG_CLIENT);
 }
 
 void EcgMgr::Data_Arrived_ecg(int fdt,void *pv){

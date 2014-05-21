@@ -18,14 +18,28 @@ void gInitGlobal() {
 		return;
 
 
-	for (int i = ECG_CLIENT; i < CMD_CLIENT; i++) {
+	for (int i = 0; i < CLIENT_NUM; i++) {
 		g_threadId[i] = -1;
 		bSend[i] = true;
 		g_type[i] = NULL;
+		gModeCollecting[i] = false;
 	}
 
 	bInit = true;
 }
+
+bool getModeCollecting(ClientType_ id){
+	if(id>=0 && id<CLIENT_NUM)
+		return gModeCollecting[id];
+
+	return false;
+}
+void setModeCollecting(ClientType_ id,bool val){
+	if(id>=0 && id<CLIENT_NUM)
+		gModeCollecting[id] = val;
+}
+
+
 void gStopSendTestData(ClientType_ id){
 	bSend[id] = false;
 }
@@ -59,6 +73,7 @@ void* __Invoker(void* arg){
 		testData[i] = i;
 	}
 
+	bSend[info->clientId] = true;
 	int len = sizeof(testData);
 	int pos = 0;
 
@@ -74,13 +89,14 @@ void* __Invoker(void* arg){
 		sleep(1);
 	}
 
+	printf("invoker exit,,,,,client=%d\n",info->clientId);
 	g_threadId[info->clientId] = -1;
 	delete info;
 
 	return NULL;
 }
 void gSendData(int fd,MsgType_ type, BYTE* buf, int len, ClientType_ id) {
-	if (fd <= 0 || id<ECG_CLIENT || id>=CMD_CLIENT)
+	if (fd <= 0 || id<0 || id>=CLIENT_NUM)
 		return;
 	//cout<<"sendData fd="<<fd<<endl;
 	//驱动任务巢
@@ -112,12 +128,10 @@ void gSendData(int fd,MsgType_ type, BYTE* buf, int len, ClientType_ id) {
 int  gSendData(int fd,MsgType_ type,ClientType_ clientId){
 	MgrDev::getInstance()->sendData(fd,type,clientId);
 }
-int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd){
-	MgrDev::getInstance()->sendData(fd,type,clientId,cmd);
+int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd,BYTE param){
+	MgrDev::getInstance()->sendData(fd,type,clientId,cmd,param);
 }
-int  gSendData(int fd,const BYTE* buf,int len){
-	MgrDev::getInstance()->sendData(fd,buf,len);
-}
+
 
 
 

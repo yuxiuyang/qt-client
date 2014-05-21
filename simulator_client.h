@@ -28,16 +28,20 @@ static CJobNest *g_ibpJob=NULL;//send data task thread.
 static CJobNest *g_co2Job=NULL;//send data task thread.
 static CJobNest *g_narcoJob=NULL;//send data task thread.
 
-static CJobNest* g_type[CMD_CLIENT];
+static CJobNest* g_type[CLIENT_NUM];
+static bool gModeCollecting[CLIENT_NUM];//是否处于 收集数据模式
 
-static bool bSend[CMD_CLIENT];
-static pthread_t g_threadId[CMD_CLIENT];
+static bool bSend[CLIENT_NUM];
+static pthread_t g_threadId[CLIENT_NUM];
 static bool bInit=false;
 void gInitGlobal();
+bool getModeCollecting(ClientType_ id);
+void setModeCollecting(ClientType_ id,bool val);
+
+
 void gSendData(int fd,MsgType_ type,BYTE* buf,int len,ClientType_ id);
 int  gSendData(int fd,MsgType_ type,ClientType_ clientId);
-int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd);
-int  gSendData(int fd,const BYTE* buf,int len);
+int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd,BYTE param=0X00);
 
 void* __Invoker(void* arg);
 

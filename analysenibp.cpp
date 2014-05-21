@@ -7,6 +7,7 @@
 
 #include "analysenibp.h"
 #include "nibpmgr.h"
+#include "simulator_client.h"
 AnalyseNibp::AnalyseNibp(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
@@ -74,6 +75,11 @@ void AnalyseNibp::addBuf(const BYTE* buf,int len){
     }
 }
 bool AnalyseNibp::anal_pag(const BYTE* buf,const int len){
+	printf("nibp anal_pag   .......\n");
+	for(int i=0;i<len;i++){
+		printf("%02x ",buf[i]);
+	}
+	printf(".......end.....\n");
     switch(buf[2]){
     case Data_Msg:
         anal_DataPag(buf,len);
@@ -81,6 +87,9 @@ bool AnalyseNibp::anal_pag(const BYTE* buf,const int len){
     case Link_Msg:
         //anal_ConnectPag(buf,len);
         break;
+    case Cmd_Msg:
+    	anal_CmdPag(buf[4],buf[5]);
+    	break;
     case Link_Request:
     	((NibpMgr*)m_mgr)->sendIdMsg();
     	break;
@@ -99,10 +108,18 @@ bool AnalyseNibp::checkData(const BYTE* buf,const int len,const BYTE value){
     return sum==value?true:false;
 }
 void AnalyseNibp::anal_DataPag(const BYTE* buf,int len){
-//	printf("anal_DataPag len=%d\n",len);
-//	for(int i=0;i<len;i++){
-//		printf("%02x ",buf[i]);
-//	}
-	//printf("end.....\n");
 	((NibpMgr*)m_mgr)->appendData(buf+3,len-5);
+}
+void AnalyseNibp::anal_CmdPag(BYTE cmd,BYTE param){
+	printf("anal_CmdPag  cmd=%02x\n",cmd);
+	switch(cmd){
+	case MODE_COLLECTDATAS:
+		setModeCollecting(NIBP_CLIENT,true);
+		((NibpMgr*)m_mgr)->sentTestData();
+		break;
+	case MODE_NORMAL:
+		setModeCollecting(NIBP_CLIENT,false);
+		((NibpMgr*)m_mgr)->stopSendTestData();
+		break;
+	}
 }

@@ -92,7 +92,7 @@ void Co2Mgr::clearTxt(Fl_Button* b,void* p){
 }
 
 void Co2Mgr::sendIdMsg(){
-	MgrDev::getInstance()->sendData(m_network.getSockFd(),Link_Msg,CO2_CLIENT);
+	gSendData(m_network.getSockFd(),Link_Msg,CO2_CLIENT);
 }
 
 void Co2Mgr::Data_Arrived_co2(int fdt,void *pv){

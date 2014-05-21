@@ -34,6 +34,8 @@ public:
 	static void startNibp(Fl_Button* b,void* p);
 	static void clearTxt(Fl_Button* b,void* p);
 	static void sendTestData(Fl_Button* b,void* p);
+	void sentTestData();
+	void stopSendTestData();
 	void sendIdMsg();
 	PatientType getPatientType(){
 		return m_patientType;

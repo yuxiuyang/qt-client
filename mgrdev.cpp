@@ -53,16 +53,17 @@ int MgrDev::sendData(int fd,MsgType_ type,ClientType_ clientId){
 	return sendData(fd,tmp,6);
 }
 
-int MgrDev::sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd){
-	BYTE tmp[7];
+int MgrDev::sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param){
+	BYTE tmp[8];
 	tmp[0] = 0x99;
-	tmp[1] = 0x07;
+	tmp[1] = 0x08;
 	tmp[2] = msgType;
 	tmp[3] = clientId;
 	tmp[4] = cmd;
-	tmp[5] = tmp[1]+tmp[2]+tmp[3]+tmp[4];
-	tmp[6] = 0xdd;
-	return sendData(fd,tmp,7);
+	tmp[5] = param;
+	tmp[6] = tmp[1]+tmp[2]+tmp[3]+tmp[4];
+	tmp[7] = 0xdd;
+	return sendData(fd,tmp,8);
 }
 int MgrDev::sendData(int fd,const BYTE* data, int len) {
 	printf("sendData start len=%d\n",len);
