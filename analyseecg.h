@@ -16,6 +16,7 @@ public:
 	int open_block();
 	bool anal_pag(const BYTE* buf,const int len);
 	void anal_DataPag(const BYTE* buf,int len);
+	void anal_CmdPag(BYTE cmd,BYTE param);
 	void addBuf(const BYTE* buf,int len);
 	bool checkData(const BYTE* buf,const int len,const BYTE value);
 	void handle(const BYTE* buf,int len);

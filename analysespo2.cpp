@@ -7,6 +7,7 @@
 
 #include "analysespo2.h"
 #include "spo2mgr.h"
+#include "simulator_client.h"
 AnalyseSpo2::AnalyseSpo2(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
@@ -80,6 +81,9 @@ bool AnalyseSpo2::anal_pag(const BYTE* buf,const int len){
     case Link_Msg:
         //anal_ConnectPag(buf,len);
         break;
+    case Cmd_Msg:
+    	anal_CmdPag(buf[4],buf[5]);
+    	break;
     case Link_Request:
     	((Spo2Mgr*)m_mgr)->sendIdMsg();
     	break;
@@ -104,4 +108,17 @@ void AnalyseSpo2::anal_DataPag(const BYTE* buf,int len){
 //	}
 	//printf("end.....\n");
 	((Spo2Mgr*)m_mgr)->appendData(buf+3,len-5);
+}
+void AnalyseSpo2::anal_CmdPag(BYTE cmd,BYTE param){
+	printf("AnalyseSpo2  anal_CmdPag  cmd=%02x\n",cmd);
+	switch(cmd){
+	case MODE_COLLECTDATAS:
+		setModeCollecting(SPO2_CLIENT,true);
+		((Spo2Mgr*)m_mgr)->sendTestData();
+		break;
+	case MODE_NORMAL:
+		setModeCollecting(SPO2_CLIENT,false);
+		((Spo2Mgr*)m_mgr)->stopSendTestData();
+		break;
+	}
 }

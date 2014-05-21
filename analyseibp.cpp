@@ -7,6 +7,7 @@
 
 #include "analyseibp.h"
 #include "ibpmgr.h"
+#include "simulator_client.h"
 AnalyseIbp::AnalyseIbp(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
@@ -81,6 +82,9 @@ bool AnalyseIbp::anal_pag(const BYTE* buf,const int len){
     case Link_Msg:
         //anal_ConnectPag(buf,len);
         break;
+    case Cmd_Msg:
+    	anal_CmdPag(buf[4],buf[5]);
+    	break;
     case Link_Request:
     	((IbpMgr*)m_mgr)->sendIdMsg();
     	break;
@@ -105,4 +109,17 @@ void AnalyseIbp::anal_DataPag(const BYTE* buf,int len){
 //	}
 	//printf("end.....\n");
 	((IbpMgr*)m_mgr)->appendData(buf+3,len-5);
+}
+void AnalyseIbp::anal_CmdPag(BYTE cmd,BYTE param){
+	printf("AnalyseIbp  anal_CmdPag  cmd=%02x\n",cmd);
+	switch(cmd){
+	case MODE_COLLECTDATAS:
+		setModeCollecting(IBP_CLIENT,true);
+		((IbpMgr*)m_mgr)->sendTestData();
+		break;
+	case MODE_NORMAL:
+		setModeCollecting(IBP_CLIENT,false);
+		((IbpMgr*)m_mgr)->stopSendTestData();
+		break;
+	}
 }

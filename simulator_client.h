@@ -39,7 +39,7 @@ bool getModeCollecting(ClientType_ id);
 void setModeCollecting(ClientType_ id,bool val);
 
 
-void gSendData(int fd,MsgType_ type,BYTE* buf,int len,ClientType_ id);
+void gSendData(int fd,MsgType_ type,ClientType_ id,BYTE* buf,int len);
 int  gSendData(int fd,MsgType_ type,ClientType_ clientId);
 int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd,BYTE param=0X00);
 

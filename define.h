@@ -56,7 +56,7 @@ enum DataSource_{
     Server_Link
 };
 enum ClientType_{
-    ECG_CLIENT=0,
+    ECG_CLIENT=1,
     SPO2_CLIENT,
     CO2_CLIENT,
     NIBP_CLIENT,

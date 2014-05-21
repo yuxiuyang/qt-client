@@ -7,6 +7,7 @@
 
 #include "analyseecg.h"
 #include "ecgmgr.h"
+#include "simulator_client.h"
 AnalyseEcg::AnalyseEcg(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
@@ -81,6 +82,9 @@ bool AnalyseEcg::anal_pag(const BYTE* buf,const int len){
     case Link_Msg:
         //anal_ConnectPag(buf,len);
         break;
+    case Cmd_Msg:
+    	anal_CmdPag(buf[4],buf[5]);
+    	break;
     case Link_Request:
     	((EcgMgr*)m_mgr)->sendIdMsg();
     	break;
@@ -105,4 +109,17 @@ void AnalyseEcg::anal_DataPag(const BYTE* buf,int len){
 //	}
 	//printf("end.....\n");
 	((EcgMgr*)m_mgr)->appendData(buf+3,len-5);
+}
+void AnalyseEcg::anal_CmdPag(BYTE cmd,BYTE param){
+	printf("AnalyseEcg anal_CmdPag  cmd=%02x\n",cmd);
+	switch(cmd){
+	case MODE_COLLECTDATAS:
+		setModeCollecting(ECG_CLIENT,true);
+		((EcgMgr*)m_mgr)->sendTestData();
+		break;
+	case MODE_NORMAL:
+		setModeCollecting(ECG_CLIENT,false);
+		((EcgMgr*)m_mgr)->stopSendTestData();
+		break;
+	}
 }

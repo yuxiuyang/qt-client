@@ -20,19 +20,19 @@ NibpMgr::~NibpMgr() {
 	delete m_analNibp;
 	m_analNibp = NULL;
 
-	disConnect(0,0);
+	//disConnect(0,0);
 }
 
 void NibpMgr::createControl(Fl_Group* ww){
 	m_connectBtn = new Fl_Button(20, 30, 82, 30, "connect");
-	m_connectBtn->callback(connect,this);
+	m_connectBtn->callback(connect_click,this);
 	ww->add(m_connectBtn);
 
 	m_connectBox = new Fl_Box(120,30,140,30,"not connect");
 	ww->add(m_connectBox);
 
 	m_disConnectBtn = new Fl_Button(270, 30, 82, 30, " disconnect");
-	m_disConnectBtn->callback(disConnect,this);
+	m_disConnectBtn->callback(disConnect_click,this);
 	m_disConnectBtn->hide();
 	ww->add(m_disConnectBtn);
 
@@ -50,7 +50,7 @@ void NibpMgr::createControl(Fl_Group* ww){
 			o->type(102);
 			o->value(1);
 			o->down_box(FL_ROUND_DOWN_BOX);
-			o->callback((Fl_Callback*) selectType,this);
+			o->callback((Fl_Callback*) selectType_click,this);
 			m_patientType = NIBP_ADULT;
 		} // Fl_Round_Button* o20
 		{
@@ -58,14 +58,14 @@ void NibpMgr::createControl(Fl_Group* ww){
 			o->tooltip("Radio button, only one button is set at a time, in the corresponding group.");
 			o->type(102);
 			o->down_box(FL_ROUND_DOWN_BOX);
-			o->callback((Fl_Callback*) selectType,this);
+			o->callback((Fl_Callback*) selectType_click,this);
 		} // Fl_Round_Button* o
 		{
 			Fl_Round_Button* o = new Fl_Round_Button(group->x(), group->y()+60, 120, 30,"NIBP_BABY");
 			o->tooltip("Radio button, only one button is set at a time, in the corresponding group.");
 			o->type(102);
 			o->down_box(FL_ROUND_DOWN_BOX);
-			o->callback((Fl_Callback*) selectType,this);
+			o->callback((Fl_Callback*) selectType_click,this);
 		} // Fl_Round_Button* o
 
 		group->end();
@@ -73,19 +73,20 @@ void NibpMgr::createControl(Fl_Group* ww){
 	}
 
 	m_startNibp = new Fl_Button(160, 340, 180, 30, " start nibp");
-	m_startNibp->callback((Fl_Callback*)startNibp,this);
+	m_startNibp->callback((Fl_Callback*)startNibp_click,this);
 	ww->add(m_startNibp);
 
 	m_sendTestDataBtn = new Fl_Button(160, 380, 180, 30, " send test data");
-	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData_click,this);
 	ww->add(m_sendTestDataBtn);
+	m_sendTestDataBtn->hide();
 
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
-	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
+	m_clearTxt->callback((Fl_Callback*)clearTxt_click,this);
 	ww->add(m_clearTxt);
 
 }
-void NibpMgr::connect(Fl_Widget *, void *p){
+void NibpMgr::connect_click(Fl_Widget *, void *p){
 	NibpMgr* pThis = (NibpMgr*)p;
 	if(-1 == pThis->m_network.connect()){
 		printf("connect failure");
@@ -99,7 +100,7 @@ void NibpMgr::connect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->deactivate();
 	pThis->m_disConnectBtn->show();
 }
-void NibpMgr::disConnect(Fl_Widget *, void *p){
+void NibpMgr::disConnect_click(Fl_Widget *, void *p){
 	NibpMgr* pThis = (NibpMgr*)p;
 	Fl::remove_fd(pThis->m_network.getSockFd());
 
@@ -109,7 +110,7 @@ void NibpMgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_disConnectBtn->deactivate();
 }
 
-void NibpMgr::selectType(Fl_Button *b, void *p) {
+void NibpMgr::selectType_click(Fl_Button *b, void *p) {
 	NibpMgr* pThis = (NibpMgr*)p;
   char msg[256];
   sprintf(msg, "Label: '%s'\nValue: %d", b->label(),b->value());
@@ -128,7 +129,7 @@ void NibpMgr::selectType(Fl_Button *b, void *p) {
   }
   pThis->sendPatientTypeCmd();
 }
-void NibpMgr::startNibp(Fl_Button* b,void* p){
+void NibpMgr::startNibp_click(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;
 	static int i = 0;
 	if(!i){
@@ -142,7 +143,7 @@ void NibpMgr::startNibp(Fl_Button* b,void* p){
 		printf("start stop\n");
 	}
 }
-void NibpMgr::sentTestData(){
+void NibpMgr::sendTestData(){
 	printf("start send test data\n");
 	m_sendTestDataBtn->label("stop send test data");
 	m_sendTestDataBtn->redraw();
@@ -155,7 +156,7 @@ void NibpMgr::stopSendTestData(){
 	::gStopSendTestData(NIBP_CLIENT);
 }
 
-void NibpMgr::sendTestData(Fl_Button* b,void* p){
+void NibpMgr::sendTestData_click(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;
 
 	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
@@ -167,9 +168,9 @@ void NibpMgr::sendTestData(Fl_Button* b,void* p){
 
 	printf("spo2mgr send test data start  NIBP_CLIENT=%02x\n",NIBP_CLIENT);
 	pThis->m_sendTestDataBtn->label("stop send test data");
-	pThis->sentTestData();
+	pThis->sendTestData();
 }
-void NibpMgr::clearTxt(Fl_Button* b,void* p){
+void NibpMgr::clearTxt_click(Fl_Button* b,void* p){
 	NibpMgr* pThis = (NibpMgr*)p;
 	pThis->m_displayTxt->value("");
 	g_linePos = 0;

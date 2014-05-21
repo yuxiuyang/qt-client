@@ -7,6 +7,7 @@
 
 #include "analyseco2.h"
 #include "co2mgr.h"
+#include "simulator_client.h"
 AnalyseCo2::AnalyseCo2(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
@@ -82,6 +83,7 @@ bool AnalyseCo2::anal_pag(const BYTE* buf,const int len){
         //anal_ConnectPag(buf,len);
         break;
     case Cmd_Msg:
+    	anal_CmdPag(buf[4],buf[5]);
     	break;
     case Link_Request:
     	((Co2Mgr*)m_mgr)->sendIdMsg();
@@ -110,10 +112,15 @@ void AnalyseCo2::anal_DataPag(const BYTE* buf,int len){
 }
 
 void AnalyseCo2::anal_CmdPag(BYTE cmd,BYTE param){
+	printf("AnalyseCo2  anal_CmdPag  cmd=%02x\n",cmd);
 	switch(cmd){
 	case MODE_COLLECTDATAS:
+		setModeCollecting(CO2_CLIENT,true);
+		((Co2Mgr*)m_mgr)->sendTestData();
 		break;
 	case MODE_NORMAL:
+		setModeCollecting(CO2_CLIENT,false);
+		((Co2Mgr*)m_mgr)->stopSendTestData();
 		break;
 	}
 }

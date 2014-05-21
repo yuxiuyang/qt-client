@@ -111,11 +111,11 @@ void AnalyseNibp::anal_DataPag(const BYTE* buf,int len){
 	((NibpMgr*)m_mgr)->appendData(buf+3,len-5);
 }
 void AnalyseNibp::anal_CmdPag(BYTE cmd,BYTE param){
-	printf("anal_CmdPag  cmd=%02x\n",cmd);
+	printf("AnalyseNibp  anal_CmdPag  cmd=%02x\n",cmd);
 	switch(cmd){
 	case MODE_COLLECTDATAS:
 		setModeCollecting(NIBP_CLIENT,true);
-		((NibpMgr*)m_mgr)->sentTestData();
+		((NibpMgr*)m_mgr)->sendTestData();
 		break;
 	case MODE_NORMAL:
 		setModeCollecting(NIBP_CLIENT,false);

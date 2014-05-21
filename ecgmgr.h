@@ -28,11 +28,13 @@ public:
 
 	void createControl(Fl_Group* ww);
 
-	static void connect(Fl_Widget *, void *);
-	static void disConnect(Fl_Widget *, void *);
-	static void selectType(Fl_Button *b, void *);
-	static void clearTxt(Fl_Button* b,void* p);
-	static void sendTestData(Fl_Button* b,void* p);
+	static void connect_click(Fl_Widget *, void *);
+	static void disConnect_click(Fl_Widget *, void *);
+	static void selectType_click(Fl_Button *b, void *);
+	static void clearTxt_click(Fl_Button* b,void* p);
+	static void sendTestData_click(Fl_Button* b,void* p);
+	void sendTestData();
+	void stopSendTestData();
 	void sendIdMsg();
 	PatientType getPatientType(){
 		return m_patientType;

@@ -20,19 +20,19 @@ IbpMgr::~IbpMgr() {
 	delete m_analIbp;
 	m_analIbp = NULL;
 
-	disConnect(0,0);
+	//disConnect(0,0);
 }
 
 void IbpMgr::createControl(Fl_Group* ww){
 	m_connectBtn = new Fl_Button(20, 30, 82, 30, "connect");
-	m_connectBtn->callback(connect,this);
+	m_connectBtn->callback(connect_click,this);
 	ww->add(m_connectBtn);
 
 	m_connectBox = new Fl_Box(120,30,100,30,"not connect");
 	ww->add(m_connectBox);
 
 	m_disConnectBtn = new Fl_Button(250, 30, 82, 30, " disconnect");
-	m_disConnectBtn->callback(disConnect,this);
+	m_disConnectBtn->callback(disConnect_click,this);
 	m_disConnectBtn->hide();
 	ww->add(m_disConnectBtn);
 
@@ -42,14 +42,15 @@ void IbpMgr::createControl(Fl_Group* ww){
 	ww->add(m_displayTxt);
 
 	m_sendTestDataBtn = new Fl_Button(160, 340, 180, 30, " send test data");
-	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData_click,this);
 	ww->add(m_sendTestDataBtn);
+	m_sendTestDataBtn->hide();
 
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
-	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
+	m_clearTxt->callback((Fl_Callback*)clearTxt_click,this);
 	ww->add(m_clearTxt);
 }
-void IbpMgr::connect(Fl_Widget *, void *p){
+void IbpMgr::connect_click(Fl_Widget *, void *p){
 	IbpMgr* pThis = (IbpMgr*)p;
 	if(-1 == pThis->m_network.connect()){
 		printf("connect failure");
@@ -62,7 +63,7 @@ void IbpMgr::connect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->hide();
 	pThis->m_disConnectBtn->show();
 }
-void IbpMgr::disConnect(Fl_Widget *, void *p){
+void IbpMgr::disConnect_click(Fl_Widget *, void *p){
 	IbpMgr* pThis = (IbpMgr*)p;
 	Fl::remove_fd(pThis->m_network.getSockFd());
 
@@ -71,21 +72,34 @@ void IbpMgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->show();
 	pThis->m_disConnectBtn->hide();
 }
-void IbpMgr::sendTestData(Fl_Button* b,void* p){
+void IbpMgr::sendTestData(){
+	printf("start send test data\n");
+	m_sendTestDataBtn->label("stop send test data");
+	m_sendTestDataBtn->redraw();
+	::gSendTestData(m_network.getSockFd(),IBP_CLIENT);
+}
+void IbpMgr::stopSendTestData(){
+	printf("stop Send Test Data ");
+	m_sendTestDataBtn->label("start send test data");
+	m_sendTestDataBtn->redraw();
+	::gStopSendTestData(IBP_CLIENT);
+}
+
+void IbpMgr::sendTestData_click(Fl_Button* b,void* p){
 	IbpMgr* pThis = (IbpMgr*)p;
 
 	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
 		printf("stop send test data\n");
 		pThis->m_sendTestDataBtn->label("start send test data");
-		::gStopSendTestData(IBP_CLIENT);
+		pThis->stopSendTestData();
 		return;
 	}
 
-	printf("spo2mgr send test data start\n");
+	printf("spo2mgr send test data start  NIBP_CLIENT=%02x\n",IBP_CLIENT);
 	pThis->m_sendTestDataBtn->label("stop send test data");
-	::gSendTestData(pThis->m_network.getSockFd(),IBP_CLIENT);
+	pThis->sendTestData();
 }
-void IbpMgr::clearTxt(Fl_Button* b,void* p){
+void IbpMgr::clearTxt_click(Fl_Button* b,void* p){
 	IbpMgr* pThis = (IbpMgr*)p;
 	pThis->m_displayTxt->value("");
 	g_linePos = 0;

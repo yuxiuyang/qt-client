@@ -7,6 +7,7 @@
 
 #include "analysenarco.h"
 #include "narcomgr.h"
+#include "simulator_client.h"
 AnalyseNarco::AnalyseNarco(void* p){
 	// TODO Auto-generated constructor stub
 	m_mgr = p;
@@ -81,6 +82,9 @@ bool AnalyseNarco::anal_pag(const BYTE* buf,const int len){
     case Link_Msg:
         //anal_ConnectPag(buf,len);
         break;
+    case Cmd_Msg:
+    	anal_CmdPag(buf[4],buf[5]);
+    	break;
     case Link_Request:
     	((NarcoMgr*)m_mgr)->sendIdMsg();
     	break;
@@ -105,4 +109,17 @@ void AnalyseNarco::anal_DataPag(const BYTE* buf,int len){
 //	}
 	//printf("end.....\n");
 	((NarcoMgr*)m_mgr)->appendData(buf+3,len-5);
+}
+void AnalyseNarco::anal_CmdPag(BYTE cmd,BYTE param){
+	printf("AnalyseNarco  anal_CmdPag  cmd=%02x\n",cmd);
+	switch(cmd){
+	case MODE_COLLECTDATAS:
+		setModeCollecting(NARCO_CLIENT,true);
+		((NarcoMgr*)m_mgr)->sendTestData();
+		break;
+	case MODE_NORMAL:
+		setModeCollecting(NARCO_CLIENT,false);
+		((NarcoMgr*)m_mgr)->stopSendTestData();
+		break;
+	}
 }

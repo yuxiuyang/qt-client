@@ -20,19 +20,19 @@ Co2Mgr::~Co2Mgr() {
 	delete m_analCo2;
 	m_analCo2 = NULL;
 
-	disConnect(0,0);
+	//disConnect(0,0);
 }
 
 void Co2Mgr::createControl(Fl_Group* ww){
 	m_connectBtn = new Fl_Button(20, 30, 82, 30, "connect");
-	m_connectBtn->callback(connect,this);
+	m_connectBtn->callback(connect_click,this);
 	ww->add(m_connectBtn);
 
 	m_connectBox = new Fl_Box(120,30,100,30,"not connect");
 	ww->add(m_connectBox);
 
 	m_disConnectBtn = new Fl_Button(250, 30, 82, 30, " disconnect");
-	m_disConnectBtn->callback(disConnect,this);
+	m_disConnectBtn->callback(disConnect_click,this);
 	m_disConnectBtn->hide();
 	ww->add(m_disConnectBtn);
 
@@ -42,14 +42,14 @@ void Co2Mgr::createControl(Fl_Group* ww){
 	ww->add(m_displayTxt);
 
 	m_sendTestDataBtn = new Fl_Button(160, 340, 180, 30, " send test data");
-	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData,this);
+	m_sendTestDataBtn->callback((Fl_Callback*)sendTestData_click,this);
 	ww->add(m_sendTestDataBtn);
 
 	m_clearTxt = new Fl_Button(350, 340, 80, 30, " clear");
-	m_clearTxt->callback((Fl_Callback*)clearTxt,this);
+	m_clearTxt->callback((Fl_Callback*)clearTxt_click,this);
 	ww->add(m_clearTxt);
 }
-void Co2Mgr::connect(Fl_Widget *, void *p){
+void Co2Mgr::connect_click(Fl_Widget *, void *p){
 	Co2Mgr* pThis = (Co2Mgr*)p;
 	if(-1 == pThis->m_network.connect()){
 		printf("connect failure");
@@ -62,7 +62,7 @@ void Co2Mgr::connect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->hide();
 	pThis->m_disConnectBtn->show();
 }
-void Co2Mgr::disConnect(Fl_Widget *, void *p){
+void Co2Mgr::disConnect_click(Fl_Widget *, void *p){
 	Co2Mgr* pThis = (Co2Mgr*)p;
 	Fl::remove_fd(pThis->m_network.getSockFd());
 
@@ -71,21 +71,34 @@ void Co2Mgr::disConnect(Fl_Widget *, void *p){
 	pThis->m_connectBtn->show();
 	pThis->m_disConnectBtn->hide();
 }
-void Co2Mgr::sendTestData(Fl_Button* b,void* p){
+void Co2Mgr::sendTestData(){
+	printf("start send test data\n");
+	m_sendTestDataBtn->label("stop send test data");
+	m_sendTestDataBtn->redraw();
+	::gSendTestData(m_network.getSockFd(),CO2_CLIENT);
+}
+void Co2Mgr::stopSendTestData(){
+	printf("stop Send Test Data ");
+	m_sendTestDataBtn->label("start send test data");
+	m_sendTestDataBtn->redraw();
+	::gStopSendTestData(CO2_CLIENT);
+}
+
+void Co2Mgr::sendTestData_click(Fl_Button* b,void* p){
 	Co2Mgr* pThis = (Co2Mgr*)p;
 
 	if(!strcmp("stop send test data",pThis->m_sendTestDataBtn->label())){
 		printf("stop send test data\n");
 		pThis->m_sendTestDataBtn->label("start send test data");
-		::gStopSendTestData(CO2_CLIENT);
+		pThis->stopSendTestData();
 		return;
 	}
 
-	printf("spo2mgr send test data start\n");
+	printf("spo2mgr send test data start  NIBP_CLIENT=%02x\n",CO2_CLIENT);
 	pThis->m_sendTestDataBtn->label("stop send test data");
-	::gSendTestData(pThis->m_network.getSockFd(),CO2_CLIENT);
+	pThis->sendTestData();
 }
-void Co2Mgr::clearTxt(Fl_Button* b,void* p){
+void Co2Mgr::clearTxt_click(Fl_Button* b,void* p){
 	Co2Mgr* pThis = (Co2Mgr*)p;
 	pThis->m_displayTxt->value("");
 	g_linePos = 0;

@@ -80,13 +80,14 @@ void* __Invoker(void* arg){
 	int count = 6;
 	while (bSend[info->clientId]) {
 		if (pos + count < len) {
-			gSendData(info->fd, info->type, testData + pos, count, info->clientId);
+			gSendData(info->fd, info->type,info->clientId, testData + pos, count);
 			pos += count;
 		} else {
-			gSendData(info->fd, info->type, testData + pos, pos + count - len, info->clientId);
+			gSendData(info->fd, info->type, info->clientId,testData + pos, pos + count - len);
 			pos = 0;
 		}
-		sleep(1);
+		//sleep(1);
+		usleep(1000*500);
 	}
 
 	printf("invoker exit,,,,,client=%d\n",info->clientId);
@@ -95,7 +96,7 @@ void* __Invoker(void* arg){
 
 	return NULL;
 }
-void gSendData(int fd,MsgType_ type, BYTE* buf, int len, ClientType_ id) {
+void gSendData(int fd,MsgType_ type,ClientType_ id, BYTE* buf, int len) {
 	if (fd <= 0 || id<0 || id>=CLIENT_NUM)
 		return;
 	//cout<<"sendData fd="<<fd<<endl;
