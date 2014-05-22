@@ -107,7 +107,7 @@ void AnalyseSpo2::anal_DataPag(const BYTE* buf,int len){
 //		printf("%02x ",buf[i]);
 //	}
 	//printf("end.....\n");
-	((Spo2Mgr*)m_mgr)->appendData(buf+3,len-5);
+	((Spo2Mgr*)m_mgr)->appendData(buf+4,len-6);
 }
 void AnalyseSpo2::anal_CmdPag(BYTE cmd,BYTE param){
 	printf("AnalyseSpo2  anal_CmdPag  cmd=%02x\n",cmd);

@@ -108,7 +108,7 @@ void AnalyseEcg::anal_DataPag(const BYTE* buf,int len){
 //		printf("%02x ",buf[i]);
 //	}
 	//printf("end.....\n");
-	((EcgMgr*)m_mgr)->appendData(buf+3,len-5);
+	((EcgMgr*)m_mgr)->appendData(buf+4,len-6);
 }
 void AnalyseEcg::anal_CmdPag(BYTE cmd,BYTE param){
 	printf("AnalyseEcg anal_CmdPag  cmd=%02x\n",cmd);

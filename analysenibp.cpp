@@ -108,7 +108,7 @@ bool AnalyseNibp::checkData(const BYTE* buf,const int len,const BYTE value){
     return sum==value?true:false;
 }
 void AnalyseNibp::anal_DataPag(const BYTE* buf,int len){
-	((NibpMgr*)m_mgr)->appendData(buf+3,len-5);
+	((NibpMgr*)m_mgr)->appendData(buf+4,len-6);
 }
 void AnalyseNibp::anal_CmdPag(BYTE cmd,BYTE param){
 	printf("AnalyseNibp  anal_CmdPag  cmd=%02x\n",cmd);

@@ -108,7 +108,7 @@ void AnalyseNarco::anal_DataPag(const BYTE* buf,int len){
 //		printf("%02x ",buf[i]);
 //	}
 	//printf("end.....\n");
-	((NarcoMgr*)m_mgr)->appendData(buf+3,len-5);
+	((NarcoMgr*)m_mgr)->appendData(buf+4,len-6);
 }
 void AnalyseNarco::anal_CmdPag(BYTE cmd,BYTE param){
 	printf("AnalyseNarco  anal_CmdPag  cmd=%02x\n",cmd);

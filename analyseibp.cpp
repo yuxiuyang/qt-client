@@ -108,7 +108,7 @@ void AnalyseIbp::anal_DataPag(const BYTE* buf,int len){
 //		printf("%02x ",buf[i]);
 //	}
 	//printf("end.....\n");
-	((IbpMgr*)m_mgr)->appendData(buf+3,len-5);
+	((IbpMgr*)m_mgr)->appendData(buf+4,len-6);
 }
 void AnalyseIbp::anal_CmdPag(BYTE cmd,BYTE param){
 	printf("AnalyseIbp  anal_CmdPag  cmd=%02x\n",cmd);
