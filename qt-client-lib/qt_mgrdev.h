@@ -1,0 +1,31 @@
+/*
+ * mgrdev.h
+ *
+ *  Created on: 13 May, 2014
+ *      Author: root
+ */
+
+#ifndef MGRDEV_H_
+#define MGRDEV_H_
+#include "qt_define.h"
+#include <sys/socket.h>
+namespace QT_CLIENT{
+class MgrDev {
+private:
+	MgrDev();
+public:
+	virtual ~MgrDev();
+
+	static MgrDev* getInstance();
+	int sendData(int fd,MsgType_ type,ClientType_ clientId,const BYTE* buf,int len);
+	int sendData(int fd,MsgType_ type,ClientType_ clientId);
+	int sendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd,BYTE param=0x00);
+private:
+	int sendData(int fd,const BYTE* buf,int len);
+private:
+	static MgrDev* m_instance;
+
+
+};
+}
+#endif /* MGRDEV_H_ */
