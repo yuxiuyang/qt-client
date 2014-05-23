@@ -8,11 +8,13 @@
 #include "qt_datamgr.h"
 #include "qt_mgrdev.h"
 #include "simulator_client.h"
+#include "FL/Fl.H"
 namespace QT_CLIENT{
 qt_DataMgr::qt_DataMgr(ClientType_ clientId) {
 	// TODO Auto-generated constructor stub
 	m_clientId = clientId;
 	m_anal = new qt_Analyse(this);
+	m_callback_ = NULL;
 }
 
 qt_DataMgr::~qt_DataMgr() {
@@ -23,12 +25,12 @@ bool qt_DataMgr::connect(){
 		printf("connect failure");
 		return false;
 	}
-	//Fl::add_fd(pThis->m_network.getSockFd(),recieve,pThis);
+	Fl::add_fd(m_network.getSockFd(),recieve,this);
 	sendIdMsg();
 	return true;
 }
 void qt_DataMgr::disConnect(){
-	//Fl::remove_fd(pThis->m_network.getSockFd());
+	Fl::remove_fd(m_network.getSockFd());
 	m_network.disConnect();
 }
 void qt_DataMgr::sendTestData(){
@@ -56,7 +58,8 @@ void qt_DataMgr::recieve(int fdt,void *pv){
 }
 
 void qt_DataMgr::Data_Arrived_(const BYTE* buf,int len){
-	m_callback_(buf,len);
+	if(m_callback_)
+		m_callback_(buf,len);
 	/*static string str;
 	static char tmp[10];
 	str = "";

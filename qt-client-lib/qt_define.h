@@ -151,10 +151,10 @@ enum CMDTYPE{
 	MODE_NORMAL,
 };
 enum PatientType{
-	NIBP_ADULT,					//成人
-	NIBP_ENFANT,					//儿童
-	NIBP_BABY,						//婴儿
-	NIBP_NONE,
+	QT_NIBP_ADULT,					//成人
+	QT_NIBP_ENFANT,					//儿童
+	QT_NIBP_BABY,						//婴儿
+	QT_NIBP_NONE,
 };
 enum NIBP_STATE{
     NIBP_START=0x87,

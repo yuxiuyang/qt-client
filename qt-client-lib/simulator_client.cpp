@@ -47,6 +47,12 @@ void gDisConnect(ClientType_ id){
 	if(getMgr(id)->isConnect())
 		getMgr(id)->disConnect();
 }
+
+void setRecvCallback(ClientType_ id,int (*fun)(const BYTE*,int)){
+	getMgr(id)->setCallback(fun);
+}
+
+
 bool getModeCollecting(ClientType_ id){
 	if(id>=0 && id<CLIENT_NUM)
 		return gModeCollecting[id];
@@ -57,7 +63,13 @@ void setModeCollecting(ClientType_ id,bool val){
 	if(id>=0 && id<CLIENT_NUM)
 		gModeCollecting[id] = val;
 }
-
+bool isCollectingData(){
+	for(int id=0;id<CLIENT_NUM;id++){
+		if(gModeCollecting[id])
+			return true;
+	}
+	return false;
+}
 
 void gStopSendTestData(ClientType_ id){
 	bSend[id] = false;
@@ -114,6 +126,9 @@ void* __Invoker(void* arg){
 	delete info;
 
 	return NULL;
+}
+void gSendData(ClientType_ id,BYTE* buf,int len){
+	gSendData(getMgr(id)->getSockFd(),Data_Msg,id,buf,len);
 }
 void gSendData(int fd,MsgType_ type,ClientType_ id, BYTE* buf, int len) {
 	if (fd <= 0 || id<0 || id>=CLIENT_NUM)

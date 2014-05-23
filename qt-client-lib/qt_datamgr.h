@@ -35,6 +35,9 @@ public:
 	ClientType_ getCurClientId(){
 		return m_clientId;
 	}
+	int getSockFd(){
+		return m_network.getSockFd();
+	}
 protected:
 	ClientType_ m_clientId;
 	Network m_network;

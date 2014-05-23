@@ -36,14 +36,17 @@ static qt_DataMgr* mgr[CLIENT_NUM];
 static bool bSend[CLIENT_NUM];
 static pthread_t g_threadId[CLIENT_NUM];
 static bool bInit=false;
-
+void gInitGlobal();
 qt_DataMgr* getMgr(ClientType_ id);
 bool gConnect(ClientType_ id);
 void gDisConnect(ClientType_ id);
-void gInitGlobal();
+void setRecvCallback(ClientType_ id,int (*fun)(const BYTE*,int));
+
 bool getModeCollecting(ClientType_ id);
 void setModeCollecting(ClientType_ id,bool val);
+bool isCollectingData();
 
+void gSendData(ClientType_ id,BYTE* buf,int len);
 
 void gSendData(int fd,MsgType_ type,ClientType_ id,BYTE* buf,int len);
 int  gSendData(int fd,MsgType_ type,ClientType_ clientId);

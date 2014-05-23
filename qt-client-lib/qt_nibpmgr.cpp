@@ -23,14 +23,14 @@ void qt_NibpMgr::sendPatientTypeCmd(){
 	printf("sendPatientTypeCmd  m_patientType=%d\n",m_patientType);
 	gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_STOP);
 	switch(m_patientType){
-	case NIBP_ADULT:
-		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_ADULT);
+	case QT_NIBP_ADULT:
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,QT_NIBP_ADULT);
 		break;
-	case NIBP_ENFANT:
-		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_ENFANT);
+	case QT_NIBP_ENFANT:
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,QT_NIBP_ENFANT);
 		break;
-	case NIBP_BABY:
-		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,NIBP_BABY);
+	case QT_NIBP_BABY:
+		gSendData(m_network.getSockFd(),Cmd_Msg,NIBP_CLIENT,NIBP_TYPE,QT_NIBP_BABY);
 		break;
 	default:
 		break;

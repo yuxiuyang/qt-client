@@ -77,11 +77,11 @@ void qt_Analyse::addBuf(const BYTE* buf,int len){
     }
 }
 bool qt_Analyse::anal_pag(const BYTE* buf,const int len){
-	printf(" anal_pag   .......\n");
-	for(int i=0;i<len;i++){
-		printf("%02x ",buf[i]);
-	}
-	printf(".......end.....\n");
+//	printf(" anal_pag   .......\n");
+//	for(int i=0;i<len;i++){
+//		printf("%02x ",buf[i]);
+//	}
+//	printf(".......end.....\n");
     switch(buf[2]){
     case Data_Msg:
         anal_DataPag(buf,len);
