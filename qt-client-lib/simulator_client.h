@@ -31,7 +31,7 @@ static CJobNest *g_co2Job=NULL;//send data task thread.
 static CJobNest *g_narcoJob=NULL;//send data task thread.
 
 static CJobNest* g_type[CLIENT_NUM];
-static bool gModeCollecting[CLIENT_NUM];//是否处于 收集数据模式
+static bool gModeCollecting;//是否处于 收集数据模式
 static qt_DataMgr* mgr[CLIENT_NUM];
 static bool bSend[CLIENT_NUM];
 static pthread_t g_threadId[CLIENT_NUM];
@@ -42,8 +42,7 @@ bool gConnect(ClientType_ id);
 void gDisConnect(ClientType_ id);
 void setRecvCallback(ClientType_ id,int (*fun)(const BYTE*,int));
 
-bool getModeCollecting(ClientType_ id);
-void setModeCollecting(ClientType_ id,bool val);
+void setModeCollecting(bool val);
 bool isCollectingData();
 
 void gSendData(ClientType_ id,BYTE* buf,int len);

@@ -117,11 +117,11 @@ void qt_Analyse::anal_CmdPag(BYTE cmd,BYTE param){
 	printf("qt_Analyse  anal_CmdPag curId=%d cmd=%02x\n",curId,cmd);
 	switch(cmd){
 	case MODE_COLLECTDATAS:
-		setModeCollecting(curId,true);
+		setModeCollecting(true);
 		//((qt_DataMgr*)m_mgr)->sendTestData();
 		break;
 	case MODE_NORMAL:
-		setModeCollecting(curId,false);
+		setModeCollecting(false);
 		//((qt_DataMgr*)m_mgr)->stopSendTestData();
 		break;
 	}

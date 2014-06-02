@@ -26,7 +26,7 @@ void gInitGlobal() {
 		g_threadId[i] = -1;
 		bSend[i] = true;
 		g_type[i] = NULL;
-		gModeCollecting[i] = false;
+		gModeCollecting= false;
 	}
 
 	bInit = true;
@@ -53,22 +53,11 @@ void setRecvCallback(ClientType_ id,int (*fun)(const BYTE*,int)){
 }
 
 
-bool getModeCollecting(ClientType_ id){
-	if(id>=0 && id<CLIENT_NUM)
-		return gModeCollecting[id];
-
-	return false;
-}
-void setModeCollecting(ClientType_ id,bool val){
-	if(id>=0 && id<CLIENT_NUM)
-		gModeCollecting[id] = val;
+void setModeCollecting(bool val){
+	gModeCollecting = val;
 }
 bool isCollectingData(){
-	for(int id=0;id<CLIENT_NUM;id++){
-		if(gModeCollecting[id])
-			return true;
-	}
-	return false;
+	return gModeCollecting;
 }
 
 void gStopSendTestData(ClientType_ id){
