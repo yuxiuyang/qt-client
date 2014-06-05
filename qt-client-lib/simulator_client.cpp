@@ -26,9 +26,8 @@ void gInitGlobal() {
 		g_threadId[i] = -1;
 		bSend[i] = true;
 		g_type[i] = NULL;
-		gModeCollecting= false;
 	}
-
+	gModeCollecting= false;
 	bInit = true;
 }
 qt_DataMgr* getMgr(ClientType_ id){
@@ -118,6 +117,9 @@ void* __Invoker(void* arg){
 }
 void gSendData(ClientType_ id,BYTE* buf,int len){
 	gSendData(getMgr(id)->getSockFd(),Data_Msg,id,buf,len);
+}
+void gSendCmd(ClientType_ id,BYTE cmd,BYTE param){
+	gSendData(getMgr(id)->getSockFd(),Cmd_Msg,id,cmd,param);
 }
 void gSendData(int fd,MsgType_ type,ClientType_ id, BYTE* buf, int len) {
 	if (fd <= 0 || id<0 || id>=CLIENT_NUM)

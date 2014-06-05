@@ -47,8 +47,12 @@ int qt_Analyse::open_block(){
      if(m_dataBuf[len-1]!=0xdd){//这个包有问题，应丢掉
           // throw a pag
           printf("miss a page\n");
-          memcpy(m_dataBuf,m_dataBuf+1,m_curPos-1);//这里需要用 m_curPos
-          m_curPos -= 1;
+          for(int i=0;i<len;i++){
+        	  printf("%02x ",m_dataBuf[i]);
+          }
+          printf("       end......................\n");
+          memcpy(m_dataBuf,m_dataBuf+len,m_curPos-len);//这里需要用 m_curPos
+          m_curPos -= len;
           return 0;
       }
 

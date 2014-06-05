@@ -46,10 +46,11 @@ void setModeCollecting(bool val);
 bool isCollectingData();
 
 void gSendData(ClientType_ id,BYTE* buf,int len);
+void gSendCmd(ClientType_ id,BYTE cmd,BYTE param=0x00);
 
 void gSendData(int fd,MsgType_ type,ClientType_ id,BYTE* buf,int len);
 int  gSendData(int fd,MsgType_ type,ClientType_ clientId);
-int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd,BYTE param=0X00);
+int  gSendData(int fd,MsgType_ type,ClientType_ clientId,BYTE cmd,BYTE param=0x00);
 
 void* __Invoker(void* arg);
 
